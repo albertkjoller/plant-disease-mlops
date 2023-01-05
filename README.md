@@ -7,11 +7,12 @@ Course project for 02476 MLOps
 
 Create a virtual environment (with Python 3.10). A pre-defined environment running with CUDA 11.6 can be created like:
 
+### Precompiled environment
 ```
     conda env create -f environment.yml
 ```
 
-
+### Manual installation
 Otherwise, run the following:
 
 ```
@@ -23,13 +24,15 @@ Install the dependencies:
     pip install -r requirements.txt
 ```
 
-Additionally install Pytorch. If running on CPU, run:
+#### PyTorch - CPU
+If running on CPU install Pytorch with the following command:
 
 ```
     pip3 install torch torchvision torchaudio
 ```
 
-Else, if running on GPU with CUDA 11.6, run:
+#### PyTorch - GPU (CUDA 11.6)
+If running on GPU with CUDA 11.6 install Pytorch with the following command:
 ```
     pip3 install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cu116
 ```

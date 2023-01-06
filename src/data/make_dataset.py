@@ -12,8 +12,10 @@ from torchvision.io import read_image
 from torchvision import transforms, utils
 from torchvision.datasets import ImageFolder
 
+import numpy as np
 from plantvillage import PlantVillage
-from create_loaders import Rescale
+
+import matplotlib.pyplot as plt
 
 @click.command()
 @click.argument('input_filepath', type=click.Path(exists=True))
@@ -24,14 +26,16 @@ def main(input_filepath, output_filepath):
     """
     logger = logging.getLogger(__name__)
     logger.info('making final data set from raw data')
-    
+    torch.manual_seed(0)
+
     input_filepath, output_filepath = Path(input_filepath), Path(output_filepath)
 
+    new_shape = 28
     plantvillage_data = ImageFolder(input_filepath, transform=transforms.Compose([
-        transforms.Resize(128),
-        transforms.Normalize(mean=[0.0, 0.0, 0.0], std=[1.0, 1.0, 1.0]), 
-        transforms.ToTensor()],
-        ),
+            transforms.Resize(new_shape),
+            transforms.ToTensor(),
+            transforms.Normalize(mean=[0.0, 0.0, 0.0], std=[1.0, 1.0, 1.0]), 
+        ]),
     )
 
     # Size of data
@@ -44,17 +48,20 @@ def main(input_filepath, output_filepath):
     N_train = N_trainval - N_val
 
     # Split dataset into files
-    trainval_data, val_data, test_data = torch.utils.data.random_split(plantvillage_data, [N_train, N_val, N_test])
-    train_data, val_data = torch.utils.data.random_split(trainval_data, [N_train, N_val])
+    train_data, val_data, test_data = torch.utils.data.random_split(
+        plantvillage_data, [N_train, N_val, N_test], generator=torch.Generator().manual_seed(0),
+    )
     
-    train_dl = DataLoader(dataset, bs, sampler=torch.utils.data.SubsetRandomSampler(indices[:300]))
-    test_dl  = DataLoader(dataset, bs, sampler=torch.utils.data.SubsetRandomSampler(indices[-300:]))
+    train_loader = torch.utils.data.DataLoader(train_data, batch_size=128, shuffle=True, num_workers=4)
+    val_loader = torch.utils.data.DataLoader(val_data, batch_size=128, shuffle=False, num_workers=4)
+    test_loader = torch.utils.data.DataLoader(test_data, batch_size=128, shuffle=False, num_workers=4)
 
-    train_loader = torch.utils.data.DataLoader(train_data,
-                                               batch_size=128,
-                                               shuffle=True,
-                                               num_workers=4
-                                               )
+    batch = next(iter(train_loader))
+    fig, axs = plt.subplots(2, 2)
+    for i in range(2):
+        axs[0, i] = plt.imshow(batch[0][:4][i].view(new_shape, new_shape, 3))
+        axs[1, i] = plt.imshow(batch[0][:4][i].view(new_shape, new_shape, 3))
+    plt.show()
 
 
 if __name__ == '__main__':

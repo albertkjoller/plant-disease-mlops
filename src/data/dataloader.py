@@ -1,8 +1,8 @@
-
 from pathlib import Path
 
 import torch
 from torch.utils.data import Dataset
+
 
 class PlantVillage(Dataset):
     """
@@ -16,7 +16,12 @@ class PlantVillage(Dataset):
             Path to datafiles to be loaded
     """
 
-    def __init__(self, dtype: str = 'train', data_path: str = 'data/processed', process_type: str = 'color'):
+    def __init__(
+        self,
+        dtype: str = "train",
+        data_path: str = "data/processed",
+        process_type: str = "color",
+    ):
         """
         Initialize Dataset-class by loading datafiles.
 
@@ -30,13 +35,13 @@ class PlantVillage(Dataset):
                 type of dataset, i.e. either 'color', 'grayscale' or 'segmented'.
         """
         # Create as Path-object
-        data_path = Path(data_path) / process_type
+        data_path = Path(data_path) / process_type / dtype
 
         # Load processed data
         self.images = torch.load(data_path / "images.pth")
-        self.images = self.images.view(self.images.shape[0], -1)
+        self.images = torch.stack(self.images).view(len(self.images), -1)
 
-        self.labels = torch.load(Path(data_path) / dtype / "labels.pth").type(torch.LongTensor)
+        self.labels = torch.LongTensor(torch.load(Path(data_path) / "labels.pth"))
 
     def __len__(self):
         return len(self.images)
@@ -47,7 +52,13 @@ class PlantVillage(Dataset):
         return {"data": image, "label": label}
 
 
-def get_loaders(data_path: str, batch_size: int, shuffle: bool, num_workers: int = 4, process_type: str = 'color'):
+def get_loaders(
+    data_path: str,
+    batch_size: int,
+    shuffle: bool,
+    num_workers: int = 4,
+    process_type: str = "color",
+):
     """
     Exploits the MNIST-class for creating torch.Dataloaders.
 
@@ -61,7 +72,7 @@ def get_loaders(data_path: str, batch_size: int, shuffle: bool, num_workers: int
             Whether to shuffle the dataset upon loading
         process_type: str
             The preprocessed version to use, i.e. 'color', 'grayscaled' or 'segmented'
-            
+
     Returns
     -------
         loaders: dict
@@ -69,20 +80,37 @@ def get_loaders(data_path: str, batch_size: int, shuffle: bool, num_workers: int
             torch.Dataloader-class.
     """
 
-    trainClass = PlantVillage(dtype='train', data_path=data_path, process_type=process_type)
+    trainClass = PlantVillage(
+        dtype="train", data_path=data_path, process_type=process_type
+    )
     train_loader = torch.utils.data.DataLoader(
-        trainClass, batch_size=batch_size, shuffle=shuffle, num_workers=num_workers,
+        trainClass,
+        batch_size=batch_size,
+        shuffle=shuffle,
+        num_workers=num_workers,
     )
 
-    valClass = PlantVillage(dtype='val', data_path=data_path, process_type=process_type)
+    valClass = PlantVillage(dtype="val", data_path=data_path, process_type=process_type)
     val_loader = torch.utils.data.DataLoader(
-        valClass, batch_size=batch_size, shuffle=shuffle, num_workers=num_workers,
+        valClass,
+        batch_size=batch_size,
+        shuffle=shuffle,
+        num_workers=num_workers,
     )
 
-    testClass = PlantVillage(dtype='test', data_path=data_path, process_type=process_type)
+    testClass = PlantVillage(
+        dtype="test", data_path=data_path, process_type=process_type
+    )
     test_loader = torch.utils.data.DataLoader(
-        testClass, batch_size=batch_size, shuffle=False, num_workers=num_workers,
+        testClass,
+        batch_size=batch_size,
+        shuffle=False,
+        num_workers=num_workers,
     )
 
     loaders = {"train": train_loader, "val": val_loader, "test": test_loader}
     return loaders
+
+
+if __name__ == "__main__":
+    data = PlantVillage()

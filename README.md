@@ -2,7 +2,9 @@ Classification of Plant Diseases using Computer Vision
 ==============================
 - Andreas Theilgaard (s201715), Albert Kjøller Jacobsen (s194253), Phillip C. Højbjerg (s184984)
 
-Course project for 02476 MLOps
+Course project for 02476 - Machine Learning Operations @ DTU (January 2023)
+
+## Project Description
 
 1. **Overall goal of the project:** The goal of this project is to use the PyTorch Image Models [(TIMM)](https://github.com/rwightman/pytorch-image-models) framework for classification of 38 plant diseases on the [PlantVillage](https://www.kaggle.com/datasets/abdallahalidev/plantvillage-dataset) dataset - while complying with the MLOps tools and practices provided in the [course](https://skaftenicki.github.io/dtu_mlops/). 
 
@@ -14,47 +16,50 @@ Course project for 02476 MLOps
 
 5. **What deep learning models do you expect to use:** The project utilizes a pretrained ResNet50 model - first introduced in the original ResNet [paper](https://arxiv.org/abs/1512.03385) (2015). The [code](https://github.com/rwightman/pytorch-image-models/blob/main/timm/models/resnet.py) for the model is available through the TIMM-repository.
 
+---
+
 ## Setup
 
-Create a virtual environment (with Python 3.10). A pre-defined environment running with CUDA 11.6 can be created like:
+Clone the repository and create a virtual environment (with Python 3.10). A pre-defined environment running with CUDA 11.6 can be created like:
 
 ### Precompiled environment
 ```
-    conda env create -f environment.yml
+conda env create -f environment.yml
 ```
 
 ### Manual installation
 Otherwise, run the following:
 
 ```
-    conda create -n mlops_project python=3.10
+conda create -n mlops_project python=3.10
 ```
 
 Install the dependencies:
 ```
-    pip install -r requirements.txt
+pip install -r requirements.txt
 ```
 
 #### PyTorch - CPU
 If running on CPU install Pytorch with the following command:
 
 ```
-    pip3 install torch torchvision torchaudio
+pip3 install torch torchvision torchaudio
 ```
 
 #### PyTorch - GPU (CUDA 11.6)
 If running on GPU with CUDA 11.6 install Pytorch with the following command:
 ```
-    pip3 install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cu116
+pip3 install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cu116
 ```
 
 ### Data download
 After cloning this repository, the download of [data](https://www.kaggle.com/datasets/abdallahalidev/plantvillage-dataset) is done through the following command:
 
 ```
-    dvc pull
+dvc pull
 ```
 
+---
 
 ## Project Organization
 ------------
@@ -108,6 +113,8 @@ After cloning this repository, the download of [data](https://www.kaggle.com/dat
 --------
 
 <p><small>Project based on the <a target="_blank" href="https://drivendata.github.io/cookiecutter-data-science/">cookiecutter data science project template</a>. #cookiecutterdatascience</small></p>
+
+---
 
 ## Checklist
 

@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import os
-import glob
 from pathlib import Path
 
 import click
@@ -8,33 +7,35 @@ import logging
 from dotenv import find_dotenv, load_dotenv
 
 import torch
-from torchvision.io import read_image
-from torchvision import transforms, utils
+from torchvision import transforms
 from torchvision.datasets import ImageFolder
-
-from plantvillage import PlantVillage
 
 import tqdm
 
+
 @click.command()
-@click.argument('input_filepath', type=click.Path(exists=True))
-@click.argument('output_filepath', type=click.Path())
+@click.argument("input_filepath", type=click.Path(exists=True))
+@click.argument("output_filepath", type=click.Path())
 def main(input_filepath, output_filepath):
-    """ Runs data processing scripts to turn raw data from (../raw) into
-        cleaned data ready to be analyzed (saved in ../processed).
+    """Runs data processing scripts to turn raw data from (../raw) into
+    cleaned data ready to be analyzed (saved in ../processed).
     """
     logger = logging.getLogger(__name__)
-    logger.info('making final data set from raw data')
+    logger.info("making final data set from raw data")
     torch.manual_seed(0)
 
     input_filepath, output_filepath = Path(input_filepath), Path(output_filepath)
 
     new_shape = 56
-    plantvillage_data = ImageFolder(input_filepath, transform=transforms.Compose([
-            transforms.Resize(new_shape),
-            transforms.ToTensor(),
-            transforms.Normalize(mean=[0.0, 0.0, 0.0], std=[1.0, 1.0, 1.0]), 
-        ]),
+    plantvillage_data = ImageFolder(
+        input_filepath,
+        transform=transforms.Compose(
+            [
+                transforms.Resize(new_shape),
+                transforms.ToTensor(),
+                transforms.Normalize(mean=[0.0, 0.0, 0.0], std=[1.0, 1.0, 1.0]),
+            ]
+        ),
     )
 
     # Size of data
@@ -48,11 +49,13 @@ def main(input_filepath, output_filepath):
 
     # Split dataset into files
     train_data, val_data, test_data = torch.utils.data.random_split(
-        plantvillage_data, [N_train, N_val, N_test], generator=torch.Generator().manual_seed(0),
+        plantvillage_data,
+        [N_train, N_val, N_test],
+        generator=torch.Generator().manual_seed(0),
     )
-    data = {'train': train_data, 'val': val_data, 'test': test_data}
+    data = {"train": train_data, "val": val_data, "test": test_data}
 
-    for dtype in ['train', 'val', 'test']:
+    for dtype in ["train", "val", "test"]:
         images, labels = [], []
         for i in tqdm.tqdm(range(len(data[dtype]))):
             images.append(train_data.__getitem__(i)[0])
@@ -63,8 +66,9 @@ def main(input_filepath, output_filepath):
         torch.save(images, output_filepath / dtype / "images.pth")
         torch.save(labels, output_filepath / dtype / "labels.pth")
 
-if __name__ == '__main__':
-    log_fmt = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+
+if __name__ == "__main__":
+    log_fmt = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
     logging.basicConfig(level=logging.INFO, format=log_fmt)
 
     # not used in this stub but often useful for finding various files

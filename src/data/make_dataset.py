@@ -63,10 +63,6 @@ def main(input_filepath, output_filepath):
         torch.save(images, output_filepath / dtype / "images.pth")
         torch.save(labels, output_filepath / dtype / "labels.pth")
 
-    #train_loader = torch.utils.data.DataLoader(train_data, batch_size=128, shuffle=True, num_workers=4)
-    #val_loader = torch.utils.data.DataLoader(val_data, batch_size=128, shuffle=False, num_workers=4)
-    #test_loader = torch.utils.data.DataLoader(test_data, batch_size=128, shuffle=False, num_workers=4)
-
 if __name__ == '__main__':
     log_fmt = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
     logging.basicConfig(level=logging.INFO, format=log_fmt)

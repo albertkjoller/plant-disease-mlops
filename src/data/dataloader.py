@@ -84,5 +84,5 @@ def get_loaders(data_path: str, batch_size: int, shuffle: bool, num_workers: int
         testClass, batch_size=batch_size, shuffle=False, num_workers=num_workers,
     )
 
-    loaders = {"train": train_loader, "test": test_loader}
+    loaders = {"train": train_loader, "val": val_loader, "test": test_loader}
     return loaders

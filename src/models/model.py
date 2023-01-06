@@ -25,5 +25,5 @@ class ImageClassification(LightningModule):
     def validation_step(self, batch, batch_idx):
         x, y = batch["data"], batch["label"]
         z = self.model(x)
-        loss = self.criterion(z, y)
+        loss = F.cross_entropy(z, y)
         return loss

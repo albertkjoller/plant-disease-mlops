@@ -3,6 +3,16 @@
 
 Course project for 02476 MLOps
 
+1. **Overall goal of the project:** The goal of this project is to use the PyTorch Image Models [(TIMM)](https://github.com/rwightman/pytorch-image-models) framework for classification of 38 plant diseases on the [PlantVillage](https://www.kaggle.com/datasets/abdallahalidev/plantvillage-dataset) dataset - while complying with the MLOps tools and practices provided in the [course](https://skaftenicki.github.io/dtu_mlops/). 
+
+2. **What framework are you going to use (PyTorch Image Models, Transformer, Pytorch-Geometrics):** This framework used throughout project will be the PyTorch Image Models [(TIMM)](https://github.com/rwightman/pytorch-image-models) framework. 
+
+3. **How do you intend to include the framework into your project:** As the intention of this project is to get acquainted with the MLOps tools provided in the course - and not to develop an all-new AI-model - the framework is used in order to get access to a pretrained ResNet model, that will be used for the classification task at hand. 
+
+4. **What data are you going to run on (initially, may change):** The colorised images of the [PlantVillage](https://www.kaggle.com/datasets/abdallahalidev/plantvillage-dataset) Kaggle-dataset, will be used throughout the project. The dataset consists of 54,305 images of healthy and diseased plant-leaves, each labeled with a plant- and disease-identifier. The dataset includes 38 different diseases, of 14 different plant-types. The task is translated to a 38-class classification problem, that identifies the disease, and thereby the plant-type of a given plant-leaf. 
+
+5. **What deep learning models do you expect to use:** The project utilizes a pretrained ResNet50 model - first introduced in the original ResNet [paper](https://arxiv.org/abs/1512.03385) (2015). The [code](https://github.com/rwightman/pytorch-image-models/blob/main/timm/models/resnet.py) for the model is available through the TIMM-repository.
+
 ## Setup
 
 Create a virtual environment (with Python 3.10). A pre-defined environment running with CUDA 11.6 can be created like:
@@ -35,6 +45,13 @@ If running on CPU install Pytorch with the following command:
 If running on GPU with CUDA 11.6 install Pytorch with the following command:
 ```
     pip3 install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cu116
+```
+
+### Data download
+After cloning this repository, the download of [data](https://www.kaggle.com/datasets/abdallahalidev/plantvillage-dataset) is done through the following command:
+
+```
+    dvc pull
 ```
 
 
@@ -90,7 +107,6 @@ If running on GPU with CUDA 11.6 install Pytorch with the following command:
 --------
 
 <p><small>Project based on the <a target="_blank" href="https://drivendata.github.io/cookiecutter-data-science/">cookiecutter data science project template</a>. #cookiecutterdatascience</small></p>
-
 
 ## Checklist
 

@@ -33,7 +33,7 @@ class PlantVillage(Dataset):
         data_path = Path(data_path) / process_type
 
         # Load processed data
-        self.images = torch.stack(torch.load(data_path/dtype/ "images.pth")).permute(0,2,3,1)
+        self.images = torch.stack(torch.load(data_path/dtype/ "images.pth"))
         #self.images = torch.load(data_path/dtype/ "images.pth")
         #self.images = self.images.view(self.images.shape[0], -1)
         self.labels = torch.LongTensor(torch.load(data_path / dtype / "labels.pth"))

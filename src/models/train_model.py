@@ -1,6 +1,8 @@
 from pytorch_lightning import Trainer
 import torch
 from src.models.model import ImageClassification
+from model import ImageClassification
+
 from src.data.dataloader import PlantVillage
 
 def main():
@@ -10,6 +12,7 @@ def main():
     dataload = PlantVillage()
     train_loader = dataload.get_loaders(dtype='train',data_path='data/processed/',batch_size=32,shuffle=False)
     val_loader = dataload.get_loaders(dtype='val',data_path='data/processed/',batch_size=32,shuffle=False)
+    
     model = ImageClassification()
     model.to(device)
 

@@ -12,10 +12,9 @@ from torchvision.io import read_image
 from torchvision import transforms, utils
 from torchvision.datasets import ImageFolder
 
-import numpy as np
 from plantvillage import PlantVillage
 
-import matplotlib.pyplot as plt
+import tqdm
 
 @click.command()
 @click.argument('input_filepath', type=click.Path(exists=True))
@@ -30,7 +29,7 @@ def main(input_filepath, output_filepath):
 
     input_filepath, output_filepath = Path(input_filepath), Path(output_filepath)
 
-    new_shape = 28
+    new_shape = 56
     plantvillage_data = ImageFolder(input_filepath, transform=transforms.Compose([
             transforms.Resize(new_shape),
             transforms.ToTensor(),
@@ -51,18 +50,22 @@ def main(input_filepath, output_filepath):
     train_data, val_data, test_data = torch.utils.data.random_split(
         plantvillage_data, [N_train, N_val, N_test], generator=torch.Generator().manual_seed(0),
     )
-    
-    train_loader = torch.utils.data.DataLoader(train_data, batch_size=128, shuffle=True, num_workers=4)
-    val_loader = torch.utils.data.DataLoader(val_data, batch_size=128, shuffle=False, num_workers=4)
-    test_loader = torch.utils.data.DataLoader(test_data, batch_size=128, shuffle=False, num_workers=4)
+    data = {'train': train_data, 'val': val_data, 'test': test_data}
 
-    batch = next(iter(train_loader))
-    fig, axs = plt.subplots(2, 2)
-    for i in range(2):
-        axs[0, i] = plt.imshow(batch[0][:4][i].view(new_shape, new_shape, 3))
-        axs[1, i] = plt.imshow(batch[0][:4][i].view(new_shape, new_shape, 3))
-    plt.show()
+    for dtype in ['train', 'val', 'test']:
+        images, labels = [], []
+        for i in tqdm.tqdm(range(len(data[dtype]))):
+            images.append(train_data.__getitem__(i)[0])
+            labels.append(train_data.__getitem__(i)[1])
 
+        # Store processed data
+        os.makedirs(output_filepath / dtype, exist_ok=True)
+        torch.save(images, output_filepath / dtype / "images.pth")
+        torch.save(labels, output_filepath / dtype / "labels.pth")
+
+    #train_loader = torch.utils.data.DataLoader(train_data, batch_size=128, shuffle=True, num_workers=4)
+    #val_loader = torch.utils.data.DataLoader(val_data, batch_size=128, shuffle=False, num_workers=4)
+    #test_loader = torch.utils.data.DataLoader(test_data, batch_size=128, shuffle=False, num_workers=4)
 
 if __name__ == '__main__':
     log_fmt = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'

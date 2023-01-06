@@ -5,7 +5,7 @@ Course project for 02476 MLOps
 
 1. **Overall goal of the project:** The goal of this project is to use the PyTorch Image Models [(TIMM)](https://github.com/rwightman/pytorch-image-models) framework for classification of 38 plant diseases on the [PlantVillage](https://www.kaggle.com/datasets/abdallahalidev/plantvillage-dataset) dataset - while complying with the MLOps tools and practices provided in the [course](https://skaftenicki.github.io/dtu_mlops/). 
 
-2. **What framework are you going to use (PyTorch Image Models, Transformer, Pytorch-Geometrics):** This framework used throughout project will be the PyTorch Image Models [(TIMM)](https://github.com/rwightman/pytorch-image-models) framework. 
+2. **What framework are you going to use (PyTorch Image Models, Transformer, Pytorch-Geometrics):** The framework used throughout this project will be the PyTorch Image Models [(TIMM)](https://github.com/rwightman/pytorch-image-models) framework. 
 
 3. **How do you intend to include the framework into your project:** As the intention of this project is to get acquainted with the MLOps tools provided in the course - and not to develop an all-new AI-model - the framework is used in order to get access to a pretrained ResNet model, that will be used for the classification task at hand. 
 

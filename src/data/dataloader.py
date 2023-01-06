@@ -69,13 +69,19 @@ def get_loaders(data_path: str, batch_size: int, shuffle: bool, num_workers: int
             torch.Dataloader-class.
     """
 
-    dataClass = PlantVillage(data_path=data_path, process_type=process_type)
+    trainClass = PlantVillage(dtype='train', data_path=data_path, process_type=process_type)
     train_loader = torch.utils.data.DataLoader(
-        dataClass, batch_size=batch_size, shuffle=shuffle, num_workers=num_workers,
+        trainClass, batch_size=batch_size, shuffle=shuffle, num_workers=num_workers,
     )
 
+    valClass = PlantVillage(dtype='val', data_path=data_path, process_type=process_type)
+    val_loader = torch.utils.data.DataLoader(
+        valClass, batch_size=batch_size, shuffle=shuffle, num_workers=num_workers,
+    )
+
+    testClass = PlantVillage(dtype='test', data_path=data_path, process_type=process_type)
     test_loader = torch.utils.data.DataLoader(
-        dataClass, batch_size=batch_size, shuffle=False, num_workers=num_workers,
+        testClass, batch_size=batch_size, shuffle=False, num_workers=num_workers,
     )
 
     loaders = {"train": train_loader, "test": test_loader}

@@ -16,5 +16,6 @@ mypy
 dvc
 dvc[gdrive]
 pipreqs
+pytorch-lightning
 
 # 

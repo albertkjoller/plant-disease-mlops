@@ -12,8 +12,6 @@ from torchvision.io import read_image
 from torchvision import transforms, utils
 from torchvision.datasets import ImageFolder
 
-from plantvillage import PlantVillage
-
 import tqdm
 
 @click.command()

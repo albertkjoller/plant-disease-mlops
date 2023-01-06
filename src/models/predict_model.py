@@ -15,7 +15,7 @@
 #     model = ImageClassification()
 #     model.to(device)
 
-#     # 
+#     #
 #     trainer = Trainer(max_epochs=5,gpus=gpus)
 #     trainer.fit(model,data_train,data_val)
 #     torch.save(trainer.state_dict(), "models/trained_model.pt")

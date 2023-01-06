@@ -1,5 +1,6 @@
 02476_project
 ==============================
+- Andreas Theilgaard (s201715), Albert K. Jacobsen (s194253), Phillip C. Højbjerg (s184984)
 
 Course project for 02476 MLOps
 

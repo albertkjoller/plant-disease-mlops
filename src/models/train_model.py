@@ -20,19 +20,24 @@ log = logging.getLogger(__name__)
 
 @hydra.main(config_path="../configs", config_name="defaults.yaml", version_base="1.1")
 def train(config):
-    print(f"configuration: \n {OmegaConf.to_yaml(config)}")
+    print(f"\nRunning on CUDA? {torch.cuda.is_available()}")
+    print(f"\nConfiguration: \n {OmegaConf.to_yaml(config)}")
 
     # Extract information from configuration
     experiment = config.experiment
     paths = config.paths
     loggers = config.logging
 
+    # Set seed
+    torch.manual_seed(experiment.training.seed)
+
     # Define compute scenario
     device, accelerator_type, num_devices = (
         (torch.device("cuda"), "gpu", -1)
         if torch.cuda.is_available()
-        else (torch.device("cpu"), "cpu", 0)
+        else (torch.device("cpu"), "cpu", None)
     )
+    device, accelerator_type, num_devices = (torch.device("cpu"), "cpu", None)
 
     # Create torch DataLoader for training set
     trainData = PlantVillage(

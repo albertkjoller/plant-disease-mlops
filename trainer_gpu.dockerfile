@@ -1,5 +1,5 @@
 # Base image
-FROM python:3.10-slim-buster
+FROM  nvcr.io/nvidia/pytorch:22.07-py3
 
 # install python
 RUN apt update && \
@@ -16,11 +16,10 @@ COPY data/processed/color/val data/processed/color/val
 COPY src/configs src/configs
 COPY src/data/dataloader.py src/data/dataloader.py
 COPY src/models/model.py src/models/model.py
-COPY src/models/train_model.py src/models/train_model.py
+COPY src/models/train_model.py src/models/train_model.pyc
 
 WORKDIR /
-RUN pip3 install torch torchvision torchaudio
+RUN pip3 install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cu116 --no-cache-dir
 RUN pip install -r requirements.txt --no-cache-dir
 
 ENTRYPOINT ["python", "-u", "src/models/train_model.py"]
-

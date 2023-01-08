@@ -1,34 +1,77 @@
-from pytorch_lightning import Trainer
+import time
+import hydra
+from omegaconf import OmegaConf
+
 import torch
-from src.models.model import ImageClassification
-from model import ImageClassification
+from pytorch_lightning import Trainer
 
 from src.data.dataloader import PlantVillage
+from src.models.model import ImageClassification
+
+import logging
+
+log = logging.getLogger(__name__)
 
 
-def main():
+#@hydra.main(config_path="config", config_name='default_config.yaml')
+#def train(config):
+#    print(f"configuration: \n {OmegaConf.to_yaml(config)}")
+#    hparams = config.experiment
+
+def train():    
+    # Define compute scenario 
     device, gpus = (
         (torch.device("cuda"), -1)
         if torch.cuda.is_available()
         else (torch.device("cpu"), 0)
     )
 
-    #
-    dataload = PlantVillage()
-    train_loader = dataload.get_loaders(
-        dtype="train", data_path="data/processed/", batch_size=32, shuffle=False
+    # Define run-specific parameters
+    SAVE_PATH = 'models/trained_model.pth'
+    DATA_PATH = 'data/processed'
+    PROCESS_TYPE = 'color'
+    LR = 1e-3
+    BATCH_SIZE = 64
+    EPOCHS = 2
+
+    # Create torch DataLoader for training set
+    trainData = PlantVillage(
+        dtype='train', data_path=DATA_PATH, process_type=PROCESS_TYPE,
     )
-    val_loader = dataload.get_loaders(
-        dtype="val", data_path="data/processed/", batch_size=32, shuffle=False
+    train_loader = trainData.get_loader(
+        batch_size=BATCH_SIZE, shuffle=True, num_workers=4
     )
 
-    model = ImageClassification()
+    # Create torch DataLoader for validation set
+    valData = PlantVillage(
+        dtype='val', data_path=DATA_PATH, process_type=PROCESS_TYPE,
+    )
+    val_loader = valData.get_loader(
+        batch_size=BATCH_SIZE, shuffle=False, num_workers=4,
+    )
+
+    # Initialize model
+    model = ImageClassification(lr=LR, n_classes=trainData.n_classes)
     model.to(device)
 
-    trainer = Trainer(max_epochs=5, gpus=gpus)
+    # Train model
+    trainer = Trainer(max_epochs=EPOCHS, gpus=gpus)
     trainer.fit(model, train_loader, val_loader)
-    torch.save(trainer.state_dict(), "models/trained_model.pt")
 
+    # Save model
+    checkpoint = {
+        "training_parameters": {
+            "data_path": DATA_PATH,
+            "save_path": SAVE_PATH,
+            "lr": LR,
+            "epochs": EPOCHS,
+            "batch_size": BATCH_SIZE,
+            "device": device,
+        },
+        "state_dict": model.state_dict(),
+        "save_time": time.time(),
+    }
+    torch.save(checkpoint, SAVE_PATH)
 
 if __name__ == "__main__":
-    main()
+    train()

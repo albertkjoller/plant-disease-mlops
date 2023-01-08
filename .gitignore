@@ -91,3 +91,6 @@ target/
 
 # Logs
 lightning_logs/
+*.pth
+*.pt
+*.ckpt

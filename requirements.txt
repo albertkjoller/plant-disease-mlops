@@ -17,5 +17,7 @@ dvc
 dvc[gdrive]
 pipreqs
 pytorch-lightning
+timm
+hydra-core
 
 # 

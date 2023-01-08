@@ -1,0 +1,11 @@
+experiment_name: exp2
+
+training:
+    lr: 0.0001
+    batch_size: 32
+    epochs: 20
+    seed: 123
+
+data:
+    process_type: 'color'
+    num_workers: 4

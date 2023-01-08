@@ -133,11 +133,11 @@ dvc pull
 * [x] Construct one or multiple docker files for your code
 * [ ] Build the docker files locally and make sure they work as intended
 * [x] Write one or multiple configurations files for your experiments
-* [ ] Used Hydra to load the configurations and manage your hyperparameters
+* [x] Used Hydra to load the configurations and manage your hyperparameters
 * [ ] When you have something that works somewhat, remember at some point to to some profiling and see if
       you can optimize your code
-* [ ] Use wandb to log training progress and other important metrics/artifacts in your code
-* [ ] Use pytorch-lightning (if applicable) to reduce the amount of boilerplate in your code
+* [x] Use wandb to log training progress and other important metrics/artifacts in your code
+* [x] Use pytorch-lightning (if applicable) to reduce the amount of boilerplate in your code
 
 ### Week 2
 

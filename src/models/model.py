@@ -38,10 +38,16 @@ class ImageClassification(LightningModule):
         x, y = batch["data"], batch["label"]
         z = self.model(x)
         loss = F.cross_entropy(z, y)
+        
+        # Log to W&B dashboard
+        self.log("train_loss", loss)
         return loss
 
     def validation_step(self, batch, batch_idx):
         x, y = batch["data"], batch["label"]
         z = self.model(x)
         loss = F.cross_entropy(z, y)
+
+        # Log to W&B dashboard
+        self.log("val_loss", loss)
         return loss

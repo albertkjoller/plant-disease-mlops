@@ -91,6 +91,9 @@ target/
 
 # Logs
 lightning_logs/
+outputs/
+
+# Torch files
 *.pth
 *.pt
 *.ckpt

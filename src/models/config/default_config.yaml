@@ -1,6 +1,0 @@
-defaults:
-  experiment: exp1
-  save_path: 'models'
-
-
-  

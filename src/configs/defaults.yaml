@@ -1,0 +1,11 @@
+defaults:
+    - experiment: exp1
+
+version: 'plant-disease-classifier_v1.0'
+
+paths:
+    save_path: 'models'
+    data_path: 'data/processed'
+
+logging:
+    wandb_entity: 'aap_dtu_mlops'

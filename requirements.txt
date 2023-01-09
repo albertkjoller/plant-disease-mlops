@@ -21,3 +21,5 @@ timm
 hydra-core
 wandb
 torch_tb_profiler
+pytest
+coverage

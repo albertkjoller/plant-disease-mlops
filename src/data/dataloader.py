@@ -44,8 +44,9 @@ class PlantVillage(Dataset):
         self.images = torch.stack(torch.load(self.data_path / "images.pth"))
         self.labels = torch.LongTensor(torch.load(Path(self.data_path) / "labels.pth"))
 
-        # Define number of classes
+        # Define number of classes and points
         self.n_classes = self.labels.unique().__len__()
+        self.N_points = self.labels.__len__()
 
     def __len__(self):
         return len(self.images)

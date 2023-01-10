@@ -4,6 +4,8 @@ Classification of Plant Diseases using Computer Vision
 
 Course project for 02476 - Machine Learning Operations @ DTU (January 2023)
 
+[![build status](https://github.com/albertkjoller/plant-disease-mlops/actions/workflows/tests.yml/badge.svg)](https://github.com/albertkjoller/plant-disease-mlops/actions/workflows/tests.yml)
+
 ## Project Description
 
 1. **Overall goal of the project:** The goal of this project is to use the PyTorch Image Models [(TIMM)](https://github.com/rwightman/pytorch-image-models) framework for classification of 38 plant diseases on the [PlantVillage](https://www.kaggle.com/datasets/abdallahalidev/plantvillage-dataset) dataset - while complying with the MLOps tools and practices provided in the [course](https://skaftenicki.github.io/dtu_mlops/). 

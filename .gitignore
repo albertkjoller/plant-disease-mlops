@@ -93,6 +93,9 @@ target/
 lightning_logs/
 outputs/
 
+# Venv on Ubuntu
+dtu_mlops/
+
 # Torch files
 *.pth
 *.pt

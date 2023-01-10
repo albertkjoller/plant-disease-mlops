@@ -37,7 +37,6 @@ def train(config):
         if torch.cuda.is_available()
         else (torch.device("cpu"), "cpu", None)
     )
-    device, accelerator_type, num_devices = (torch.device("cpu"), "cpu", None)
 
     # Create torch DataLoader for training set
     trainData = PlantVillage(
@@ -75,7 +74,7 @@ def train(config):
         accelerator=accelerator_type,
         devices=num_devices,
         logger=WandbLogger(
-            name=experiment.experiment_name, project=config.version, entity=loggers.wandb_entity
+            name=f"{experiment.experiment_name}-{int(time.time())}", project=config.version, entity=loggers.wandb_entity
         ),
     )
     trainer.fit(model, train_loader, val_loader)

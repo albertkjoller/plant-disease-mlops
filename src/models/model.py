@@ -37,24 +37,35 @@ class ImageClassification(LightningModule):
     def training_step(self, batch, batch_idx):
         x, y = batch["data"], batch["label"]
         z = self.model(x)
+
+        # Compute loss
         loss = F.cross_entropy(z, y)
-        probs,pred_class = torch.topk(F.softmax(z,dim=0),k=1)
-        pred_class=torch.reshape(pred_class,(torch.tensor(y.size()).item(),))
-        train_acc = (torch.sum(pred_class==y)/torch.tensor(y.size())).item()
+
+        # Get predictions and compute accuracy
+        probs, pred_class = torch.topk(F.softmax(z, dim=0), k=1)
+        pred_class = torch.reshape(pred_class, (torch.tensor(y.size()).item(),))
+        train_acc = (torch.sum(pred_class == y) / torch.tensor(y.size())).item()
+
         # Log to W&B dashboard
         self.log("train_loss", loss)
-        self.log("train_acc",train_acc)
+        self.log("train_acc", train_acc)
 
         return loss
 
     def validation_step(self, batch, batch_idx):
         x, y = batch["data"], batch["label"]
         z = self.model(x)
+
+        # Compute loss
         loss = F.cross_entropy(z, y)
-        probs,pred_class = torch.topk(F.softmax(z,dim=0),k=1)
-        pred_class=torch.reshape(pred_class,(torch.tensor(y.size()).item(),))
-        val_acc = (torch.sum(pred_class==y)/torch.tensor(y.size())).item()
+
+        # Get predictions and compute accuracy
+        probs, pred_class = torch.topk(F.softmax(z, dim=0), k=1)
+        pred_class = torch.reshape(pred_class, (torch.tensor(y.size()).item(),))
+        val_acc = (torch.sum(pred_class == y) / torch.tensor(y.size())).item()
+
         # Log to W&B dashboard
         self.log("val_loss", loss)
-        self.log("val_acc",val_acc)
+        self.log("val_acc", val_acc)
+
         return loss

@@ -79,12 +79,9 @@ class PlantVillage(Dataset):
             dataloader: torch.utils.data.DataLoader
                 A torch DataLoader to be used when training models.
         """
-        
+
         dataloader = torch.utils.data.DataLoader(
-            self,
-            batch_size=batch_size,
-            shuffle=shuffle,
-            num_workers=num_workers,
+            self, batch_size=batch_size, shuffle=shuffle, num_workers=num_workers
         )
 
         return dataloader

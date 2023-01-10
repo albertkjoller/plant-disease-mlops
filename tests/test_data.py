@@ -1,33 +1,33 @@
 import pytest
+import os
 from pathlib import Path
 
 from tests import _PATH_DATA
 from src.data.dataloader import PlantVillage    
-
-# Create train dataset 
-trainData = PlantVillage(
-    dtype="train",
-    data_path=Path(_PATH_DATA) / 'processed',
-    process_type='color',
-)
-
-# Create validation dataset 
-valData = PlantVillage(
-    dtype="val",
-    data_path=Path(_PATH_DATA) / 'processed',
-    process_type='color',
-)
-
-# Create test dataset 
-testData = PlantVillage(
-    dtype="test",
-    data_path=Path(_PATH_DATA) / 'processed',
-    process_type='color',
-)
          
-
+@pytest.mark.skipif(not os.path.exists(Path(_PATH_DATA) / 'processed'), reason="Data files not found")
 class TestDatasetClass:
-    
+    global trainData, valData, testData
+
+    # Create train dataset 
+    trainData = PlantVillage(
+        dtype="train",
+        data_path=Path(_PATH_DATA) / 'processed',
+        process_type='color',
+    )
+    # Create validation dataset 
+    valData = PlantVillage(
+        dtype="val",
+        data_path=Path(_PATH_DATA) / 'processed',
+        process_type='color',
+    )
+    # Create test dataset 
+    testData = PlantVillage(
+        dtype="test",
+        data_path=Path(_PATH_DATA) / 'processed',
+        process_type='color',
+    )
+
     def test_dataset_size(self):
         # Total number of points in processed data
         N = trainData.N_points + valData.N_points + testData.N_points

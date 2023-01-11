@@ -27,12 +27,18 @@ class ImageClassification(LightningModule):
             "resnet50", pretrained=True, num_classes=n_classes
         )
 
-        # Define parameters
-        self.params = self.parameters()
+        # Freeze ResNet weights 
+        for param in self.model.parameters():
+            param.requires_grad = False
+        # except for the last, fully connected output layer
+        self.model.fc.weight.requires_grad = True
+        self.model.fc.bias.requires_grad = True
+
+        # Setup learning rate
         self.lr = lr
 
     def configure_optimizers(self):
-        return torch.optim.Adam(self.params, self.lr)
+        return torch.optim.Adam(self.model.parameters(), self.lr)
 
     def training_step(self, batch, batch_idx):
         x, y = batch["data"], batch["label"]

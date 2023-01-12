@@ -30,5 +30,5 @@ COPY src/models/model.py src/models/model.py
 COPY src/models/train_model.py src/models/train_model.py
 
 WORKDIR /
+RUN pip install -r requirements.txt --no-cache-dir
 RUN pip3 install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cu116 --no-cache-dir
-RUN pip3 install -r requirements.txt --no-cache-dir

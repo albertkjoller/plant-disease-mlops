@@ -1,0 +1,16 @@
+experiment:
+  experiment_name: exp1
+  training:
+    lr: 0.05662147088154636
+    batch_size: 64
+    epochs: 1
+    seed: 42
+  data:
+    process_type: color
+    num_workers: 4
+version: plant-disease-classifier_v1.0
+paths:
+  save_path: models
+  data_path: data/processed
+logging:
+  wandb_entity: aap_dtu_mlops

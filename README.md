@@ -70,6 +70,16 @@ dvc pull
 
 ---
 
+### Running a hyperparameter-sweep
+A hyper-parameter sweep can be started through the following command:
+```
+wandb sweep --project sweeps_demo src/configs/sweep.yaml
+```
+The command will return a 'sweep_id', that starts the sweep like so: 
+'''
+wandb agent aap_dtu_mlops/sweeps_demo/sweep_id
+'''
+
 ## Project Organization
 ------------
 

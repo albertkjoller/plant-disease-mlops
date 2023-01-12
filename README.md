@@ -164,8 +164,8 @@ wandb agent aap_dtu_mlops/sweeps_demo/sweep_id
 * [x] Write unit tests related to model construction
 * [x] Calculate the coverage.
 * [x] Get some continuous integration running on the github repository
-* [ ] (optional) Create a new project on `gcp` and invite all group members to it
-* [ ] Create a data storage on `gcp` for you data
+* [x] (optional) Create a new project on `gcp` and invite all group members to it
+* [x] Create a data storage on `gcp` for you data
 * [ ] Create a trigger workflow for automatically building your docker images
 * [ ] Get your model training on `gcp`
 * [ ] Play around with distributed data loading

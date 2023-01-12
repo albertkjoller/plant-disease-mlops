@@ -26,8 +26,8 @@ class ImageClassification(LightningModule):
         self.model = timm.create_model(
             "resnet50", pretrained=True, num_classes=n_classes
         )
-        
-        # Freeze ResNet weights 
+
+        # Freeze ResNet weights
         for param in self.model.parameters():
             param.requires_grad = False
         # except for the last, fully connected output layer
@@ -35,10 +35,7 @@ class ImageClassification(LightningModule):
         self.model.fc.bias.requires_grad = True
 
         # Include LogSoftmax for numerical stability
-        self.model = torch.nn.Sequential([
-            self.model(),
-            torch.nn.LogSoftmax(dim=1),
-        ])
+        self.log_softmax = torch.nn.LogSoftmax(dim=1)
 
         # Setup learning rate
         self.lr = lr
@@ -58,7 +55,7 @@ class ImageClassification(LightningModule):
         # Compute accuracy
         pred_class = pred_class.reshape(y.shape)
         train_acc = torch.mean((pred_class == y).float())
-    
+
         # Log to W&B dashboard
         self.log("train_loss", loss)
         self.log("train_acc", train_acc)
@@ -76,7 +73,7 @@ class ImageClassification(LightningModule):
         # Compute accuracy
         pred_class = pred_class.reshape(y.shape)
         val_acc = torch.mean((pred_class == y).float())
-        #val_acc = ( torch.sum(pred_class == y) / len(y)).item()
+        # val_acc = ( torch.sum(pred_class == y) / len(y)).item()
 
         # Log to W&B dashboard
         self.log("val_loss", loss)

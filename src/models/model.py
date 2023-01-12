@@ -58,11 +58,10 @@ class ImageClassification(LightningModule):
         # Compute accuracy
         pred_class = pred_class.reshape(y.shape)
         train_acc = torch.mean((pred_class == y).float())
-        
+    
         # Log to W&B dashboard
         self.log("train_loss", loss)
-        self.log("train_acc",train_acc)
-
+        self.log("train_acc", train_acc)
         return loss
 
     def validation_step(self, batch, batch_idx):

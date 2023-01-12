@@ -1,0 +1,11 @@
+experiment_name: test_reproducible
+
+training:
+    lr: 0.001
+    batch_size: 64
+    epochs: 100
+    seed: 42
+
+data:
+    process_type: 'color'
+    num_workers: 4

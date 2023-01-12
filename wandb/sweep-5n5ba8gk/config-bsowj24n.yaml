@@ -1,0 +1,4 @@
+wandb_version: 1
+
+experiment.training.lr:
+  value: 0.05964214485219376

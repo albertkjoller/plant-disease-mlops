@@ -1,4 +1,4 @@
-name: "Run tests"
+name: "Run Mac OS"
 
 on:
   push:

@@ -18,8 +18,8 @@ RUN source /root/google-cloud-sdk/path.bash.inc
 #RUN curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key --keyring /usr/share/keyrings/cloud.google.gpg add -
 #RUN apt-get update && apt-get install google-cloud-sdk -y
 
-# RUN gcloud init
-# RUN gsutil cp -r gs://mlops_plant_disease_bucket/data .
+RUN gcloud init
+RUN gsutil cp -r -v gs://plant-disease-mlops-data-bucket/data .
 
 # copy setup and installation files
 #COPY src/configs src/configs

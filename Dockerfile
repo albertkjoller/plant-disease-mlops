@@ -18,16 +18,17 @@ RUN /root/google-cloud-sdk/bin/gsutil cp -r gs://plant-disease-mlops-data-bucket
 # Fixing data location
 RUN mv plant-disease-mlops-data-bucket/data data
 RUN rm -r plant-disease-mlops-data-bucket
+RUN rm DATA_KEY_FILE.json
 
 # copy setup and installation files
-COPY src/configs src/configs
-COPY requirements.txt requirements.txt
-COPY setup.py setup.py
+COPY src/configs /src/configs
+COPY requirements.txt /requirements.txt
+COPY setup.py /setup.py
 
 # copy model training files
-COPY src/data/dataloader.py src/data/dataloader.py
-COPY src/models/model.py src/models/model.py
-COPY src/models/train_model.py src/models/train_model.py
+COPY src/data/dataloader.py /src/data/dataloader.py
+COPY src/models/model.py /src/models/model.py
+COPY src/models/train_model.py /src/models/train_model.py
 
 WORKDIR /
 RUN pip install -r requirements.txt --no-cache-dir

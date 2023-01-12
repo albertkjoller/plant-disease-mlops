@@ -27,34 +27,55 @@ class ImageClassification(LightningModule):
             "resnet50", pretrained=True, num_classes=n_classes
         )
 
-        # Define parameters
-        self.params = self.parameters()
+        # Freeze ResNet weights
+        for param in self.model.parameters():
+            param.requires_grad = False
+        # except for the last, fully connected output layer
+        self.model.fc.weight.requires_grad = True
+        self.model.fc.bias.requires_grad = True
+
+        # Include LogSoftmax for numerical stability
+        self.log_softmax = torch.nn.LogSoftmax(dim=1)
+
+        # Setup learning rate
         self.lr = lr
 
     def configure_optimizers(self):
-        return torch.optim.Adam(self.params, self.lr)
+        return torch.optim.Adam(self.model.parameters(), self.lr)
 
     def training_step(self, batch, batch_idx):
         x, y = batch["data"], batch["label"]
-        z = self.model(x)
-        loss = F.cross_entropy(z, y)
-        probs,pred_class = torch.topk(F.softmax(z,dim=0),k=1)
-        pred_class=torch.reshape(pred_class,(torch.tensor(y.size()).item(),))
-        train_acc = (torch.sum(pred_class==y)/torch.tensor(y.size())).item()
+        z = self.log_softmax(self.model(x))
+
+        # Compute loss and probability of prediction
+        loss = F.nll_loss(z, y)
+        log_prob, pred_class = torch.topk(z, k=1)
+        prob = torch.exp(log_prob)
+
+        # Compute accuracy
+        pred_class = pred_class.reshape(y.shape)
+        train_acc = torch.mean((pred_class == y).float())
+
         # Log to W&B dashboard
         self.log("train_loss", loss)
-        self.log("train_acc",train_acc)
-
+        self.log("train_acc", train_acc)
         return loss
 
     def validation_step(self, batch, batch_idx):
         x, y = batch["data"], batch["label"]
-        z = self.model(x)
-        loss = F.cross_entropy(z, y)
-        probs,pred_class = torch.topk(F.softmax(z,dim=0),k=1)
-        pred_class=torch.reshape(pred_class,(torch.tensor(y.size()).item(),))
-        val_acc = (torch.sum(pred_class==y)/torch.tensor(y.size())).item()
+        z = self.log_softmax(self.model(x))
+
+        # Compute loss and probability of prediction
+        loss = F.nll_loss(z, y)
+        log_prob, pred_class = torch.topk(z, k=1)
+        prob = torch.exp(log_prob)
+
+        # Compute accuracy
+        pred_class = pred_class.reshape(y.shape)
+        val_acc = torch.mean((pred_class == y).float())
+        # val_acc = ( torch.sum(pred_class == y) / len(y)).item()
+
         # Log to W&B dashboard
         self.log("val_loss", loss)
-        self.log("val_acc",val_acc)
+        self.log("val_acc", val_acc)
         return loss

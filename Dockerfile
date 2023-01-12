@@ -8,8 +8,10 @@ RUN apt update && \
 
 RUN curl https://sdk.cloud.google.com > install.sh
 RUN bash install.sh --disable-prompts
-# RUN source /root/google-cloud-sdk/completion.bash.inc
-# RUN source /root/google-cloud-sdk/path.bash.inc
+SHELL ["/bin/bash", "-c"]
+
+RUN source /root/google-cloud-sdk/completion.bash.inc
+RUN source /root/google-cloud-sdk/path.bash.inc
 
 #RUN echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
 #RUN apt-get install apt-transport-https ca-certificates gnupg curl -y

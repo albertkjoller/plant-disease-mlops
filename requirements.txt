@@ -15,6 +15,7 @@ isort
 mypy
 dvc
 dvc[gdrive]
+dvc[gs]
 pipreqs
 pytorch-lightning
 timm

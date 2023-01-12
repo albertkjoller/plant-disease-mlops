@@ -4,7 +4,10 @@ Classification of Plant Diseases using Computer Vision
 
 Course project for 02476 - Machine Learning Operations @ DTU (January 2023)
 
-[![build status](https://github.com/albertkjoller/plant-disease-mlops/actions/workflows/tests.yml/badge.svg)](https://github.com/albertkjoller/plant-disease-mlops/actions/workflows/tests.yml)
+[![build status](https://github.com/albertkjoller/plant-disease-mlops/actions/workflows/ubuntu.yml/badge.svg)](https://github.com/albertkjoller/plant-disease-mlops/actions/workflows/ubuntu.yml)
+[![build status](https://github.com/albertkjoller/plant-disease-mlops/actions/workflows/macos.yml/badge.svg)](https://github.com/albertkjoller/plant-disease-mlops/actions/workflows/macos.yml)
+[![build status](https://github.com/albertkjoller/plant-disease-mlops/actions/workflows/windows.yml/badge.svg)](https://github.com/albertkjoller/plant-disease-mlops/actions/workflows/windows.yml)
+[![build status](https://github.com/albertkjoller/plant-disease-mlops/actions/workflows/coverage.yml/badge.svg)](https://github.com/albertkjoller/plant-disease-mlops/actions/workflows/coverage.yml)
 
 ## Project Description
 

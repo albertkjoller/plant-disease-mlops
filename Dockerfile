@@ -3,7 +3,7 @@ FROM python:3.10-slim-buster
 
 # install python
 RUN apt update && \
-    apt install --no-install-recommends -y build-essential gcc && \
+    apt install --no-install-recommends -y build-essential gcc curl && \
     apt clean && rm -rf /var/lib/apt/lists/*
 
 RUN curl https://sdk.cloud.google.com > install.sh

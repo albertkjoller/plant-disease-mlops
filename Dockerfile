@@ -13,8 +13,12 @@ RUN bash install.sh --disable-prompts
 SHELL ["/bin/bash", "-c"]
 # RUN source /root/google-cloud-sdk/completion.bash.inc
 #RUN source /root/google-cloud-sdk/path.bash.inc
-RUN /root/google-cloud-sdk/bin/gsutil cp -r -v gs://plant-disease-mlops-data-bucket/data .
-#gsutil cp -r -v gs://plant-disease-mlops-data-bucket/data .
+COPY DATA_KEY_FILE.json DATA_KEY_FILE.json
+RUN /root/google-cloud-sdk/bin/gcloud auth activate-service-account --key-file=DATA_KEY_FILE.json
+RUN /root/google-cloud-sdk/bin/gsutil cp -r gs://plant-disease-mlops-data-bucket .
+
+RUN mv plant-disease-mlops-data-bucket/data data
+RUN rm -r plant-disease-mlops-data-bucket
 
 # RUN rm /bin/sh && ln -s /bin/bash /bin/sh
 #RUN gcloud init

@@ -92,6 +92,8 @@ target/
 # Logs
 lightning_logs/
 outputs/
+wandb/
+.hydra/
 
 # Venv on Ubuntu
 dtu_mlops/

@@ -6,22 +6,15 @@ RUN apt update && \
     apt install --no-install-recommends -y build-essential gcc && \
     apt clean && rm -rf /var/lib/apt/lists/*
 
-# Downloading gcloud package
-RUN curl https://dl.google.com/dl/cloudsdk/release/google-cloud-sdk.tar.gz > /tmp/google-cloud-sdk.tar.gz
+RUN echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
+RUN apt-get install apt-transport-https ca-certificates gnupg curl -y
+RUN curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key --keyring /usr/share/keyrings/cloud.google.gpg add -
+RUN apt-get update && apt-get install google-cloud-sdk -y
 
-# Installing the package
-RUN mkdir -p /usr/local/gcloud \
-  && tar -C /usr/local/gcloud -xvf /tmp/google-cloud-sdk.tar.gz \
-  && /usr/local/gcloud/google-cloud-sdk/install.sh
-
-# Adding the package path to local
-ENV PATH $PATH:/usr/local/gcloud/google-cloud-sdk/bin
-
-COPY src/configs src/configs
-RUN mkdir src/data/
-RUN gcloud storage cp $(gcloud storage ls --recursive gs://mlops_plant_disease_bucket/data/processed/color/test) src/data/
+RUN gsutil cp -r gs://mlops_plant_disease_bucket/data .
 
 # copy setup and installation files
+COPY src/configs src/configs
 COPY requirements.txt requirements.txt
 COPY setup.py setup.py
 

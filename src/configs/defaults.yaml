@@ -3,6 +3,10 @@ defaults:
 
 version: 'plant-disease-classifier_v1.0'
 
+hydra:  
+  run:  
+    dir: .
+
 paths:
     save_path: 'models'
     data_path: 'data/processed'

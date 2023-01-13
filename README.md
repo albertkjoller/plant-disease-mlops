@@ -61,7 +61,7 @@ pip3 install torch torchvision torchaudio --extra-index-url https://download.pyt
 A Virtual Machine containing all that is needed for training and evaluation of models is available as a Docker image. 
 It can be accessesed like so: 
 ```
-Docker pull gcr.io/plant-disease-mlops/docker_img
+docker pull gcr.io/plant-disease-mlops/docker_img
 ```
 
 ### Pre-commit

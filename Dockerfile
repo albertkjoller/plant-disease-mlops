@@ -1,4 +1,3 @@
-# Base image
 FROM nvcr.io/nvidia/pytorch:22.07-py3
 
 # install python
@@ -16,7 +15,7 @@ RUN /root/google-cloud-sdk/bin/gcloud auth activate-service-account --key-file=D
 RUN /root/google-cloud-sdk/bin/gsutil cp -r gs://plant-disease-mlops-data-bucket .
 
 # Fixing data location
-RUN mv plant-disease-mlops-data-bucket/data data
+RUN mv plant-disease-mlops-data-bucket/data /data
 RUN rm -r plant-disease-mlops-data-bucket
 RUN rm DATA_KEY_FILE.json
 

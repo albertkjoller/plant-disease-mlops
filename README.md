@@ -57,6 +57,13 @@ If running on GPU with CUDA 11.6 install Pytorch with the following command:
 pip3 install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cu116
 ```
 
+### Docker
+A Virtual Machine containing all that is needed for training and evaluation of models is available as a Docker image. 
+It can be accessesed like so: 
+```
+docker pull gcr.io/plant-disease-mlops/docker_img
+```
+
 ### Pre-commit
 For exploiting the `pre-commit`-package when committing to the repository, install with the current configurations by running:
 ```
@@ -169,7 +176,7 @@ wandb agent aap_dtu_mlops/sweeps_demo/sweep_id
 * [x] Get some continuous integration running on the github repository
 * [x] (optional) Create a new project on `gcp` and invite all group members to it
 * [x] Create a data storage on `gcp` for you data
-* [ ] Create a trigger workflow for automatically building your docker images
+* [x] Create a trigger workflow for automatically building your docker images
 * [ ] Get your model training on `gcp`
 * [ ] Play around with distributed data loading
 * [ ] (optional) Play around with distributed model training

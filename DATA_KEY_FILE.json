@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "plant-disease-mlops",
+  "private_key_id": "7e6d20fe9f0308992ba56a9bbb3eae758d04e96b",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvwIBADANBgkqhkiG9w0BAQEFAASCBKkwggSlAgEAAoIBAQDNDZXtoS9g6h4j\neYsxdTlf6s9dwXtf8MtTLaazpUnGvtzfOwYA/9N0NB3V2YPsQwRRSWCntkAXAUxo\n+ilM+sJlP1BXW+RK6lQcMAk2b0xfs+UDtqc4TvoevYrpr9wefhqltG1L9S1Qz93q\nQA32U+0QjnNxwKoSyHiXqYuH92uMRqSkDa4pFqlEYwjxRmKAW5/4PKhPhprwzcE0\nDDv7pC0VEKE8Mzu1jodHp0z530c6IM7UkmmdDVDQgXiXBxZqWQdFoF+uWf0J2dAe\nw4DbAx/6RoZU52QLKXFOpWrcX9TnhLcSDyEXzjVtFyIcSqfTPAQC3uGa89GZdlhM\nNkkJr7znAgMBAAECggEAHTRyUQI0OMtE1/b04RTvQzQy17QkdHbbxrDe/YGCVKkU\n1UMsqOdxlas3P/Y3KLx8zhpeMVTZo6J+4F7CPiFi9D+vG4TOKvCyt8G3C4aQ6/qN\nGNkiz6LJU1KEs/bk/396H8q8XGVYUG+4DX0/tStL6EqZslm8qhMyayDDQO4iO7wH\nYfLqzaC9SRi/48N8tTYa3sNlAiH2u1NzDMh+tJf+/t78xayuRRzfyta47cVLW4fm\nZOBWQCX88yqAC0aLeBabZylCRc37H71/W2Usg6nYoFfOXe8pJrNf2K1skAkbUExD\nNDhO7YdDvTYezqIwT48N+CfIjs/tsD6Mt/aJDexO7QKBgQDt1GVNVxENi++ov3QP\nwBQl0twZfu0+2gWBnM0liLFucpD9sGEJUA22HovhsbxEWnC9SRq9YHJNwFmn8988\nMzKeOLdtxl+7OBUBcL146dwbOy7QpSE4K/aqoyBdXZDzK+ulWwbz2hIEdi39tjjP\naaGiGWiP/D953o9t5rzcUsJcBQKBgQDcuCCFQ49wzZmO0GhJFkrr4+wLVCUH7bYR\neypZaqae+sGeG1a1K39gDKXEcukrq5y53XOXi0xYuXCoVz4HYx3ZXLhX1WczQAS5\nz7q7AvldSCy/uiUeRuHRQnc4AvJ2T9aukxggIs1NakmA2+IgHH+KaPa/3/l03ZgW\n4Za+Iny0+wKBgQDLwQLE/snSVEgPx26Uq9fXC86bXT2+ciTzhTXQaUqxuB916K1J\nwDbvBz6KLq5/1Qfvcvkgs8dZy2hEVs+zEJ3WJfsoZiLQD90XLdJ2C80R22NhR4et\nSyT5zeXFd4reeotZUCIlundjMSh3y6ziLbpXWPNXICH1s/Inkt3M2G5BTQKBgQDb\nw0U2Cwe2NDAR33YGV3jvmDd9LCHW3BttGmoXL7aJEnlXmDbkGlQv6Uff6t45Chz5\nfwJJwHua18DRDFSJfGnK86PkaGnhwHs0Gx38eECbXXKYz5mHpOHQvlH/5gdOP74s\nge8CiERMMWjQMZ7bhCSFRm9wqmwxrTVyitjRpXrvowKBgQCe+j08QuvMrvdRcS8l\n+sOQlIjM5vb2FDALBLrAa/zJw4DzbqcZ7reG9Xhdxz84GNHVy0pQrwahegQIrk3w\n8M4Z5psxv+GrffBtlIroYFcWX+STDJG1Md/gek2mZshxShenw5SE+oegSvCojtH/\nG+Tf06uNB1jBidW+1+HCqiM6Uw==\n-----END PRIVATE KEY-----\n",
+  "client_email": "storage@plant-disease-mlops.iam.gserviceaccount.com",
+  "client_id": "112418122973094972748",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/storage%40plant-disease-mlops.iam.gserviceaccount.com"
+}

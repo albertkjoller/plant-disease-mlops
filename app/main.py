@@ -4,7 +4,6 @@ from fastapi import FastAPI
 from fastapi import UploadFile, File
 
 import os
-from pathlib import Path
 import datetime, time
 from typing import Optional, List
 

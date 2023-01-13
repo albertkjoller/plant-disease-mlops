@@ -24,9 +24,6 @@ class ImageClassification(LightningModule):
         # Initialize as Lightning Module
         super().__init__()
 
-        self.idx2class = get_labels()
-        self.class2idx = {v: int(k) for (k, v) in self.idx2class.items()}
-
         # Load pre-train ResNet network
         self.model = timm.create_model(
             "resnet50", pretrained=True, num_classes=n_classes
@@ -104,6 +101,11 @@ class ImageClassification(LightningModule):
             return pred_class
 
         else:  # consistently set to -1 in deployment mode
+            # Get label dictionary
+            self.idx2class = get_labels()
+            self.class2idx = {v: int(k) for (k, v) in self.idx2class.items()}
+
+            # Get topK predictions
             K = 5
             log_prob, pred_class = torch.topk(z, k=K)
             prob = torch.exp(log_prob)

@@ -79,3 +79,19 @@ class ImageClassification(LightningModule):
         self.log("val_loss", loss)
         self.log("val_acc", val_acc)
         return loss
+
+    def predict_step(self, batch, batch_idx):
+        x, y = batch["data"], batch["label"]
+        z = self.log_softmax(self.model(x))
+
+        K = 5
+        log_prob, pred_class = torch.topk(z, k=K)
+        prob = torch.exp(log_prob)
+
+        output = {
+            y[i]: {
+                i: {"pred": pred_[i].item(), "prob": prob_[i].item()} for i in range(K)
+            }
+            for i, (pred_, prob_) in enumerate(zip(pred_class, prob))
+        }
+        return output

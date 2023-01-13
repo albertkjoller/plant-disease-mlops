@@ -1,27 +1,17 @@
-from fastapi import FastAPI
-
-import re
-from http import HTTPStatus
-
 import uvicorn
-
-from enum import Enum
-from pydantic import BaseModel
+from http import HTTPStatus
+from fastapi import FastAPI
+from fastapi import UploadFile, File
 
 import os
 from pathlib import Path
-
-from fastapi import UploadFile, File
-from fastapi.responses import FileResponse
-import cv2
+import datetime, time
 from typing import Optional, List
 
+import cv2
 import torch
-import sys
-import datetime, time
 
 from src.models.model import ImageClassification
-from app.app_utils import get_labels # get labels dictionary here
 
 
 class ModelWrapper:
@@ -138,7 +128,8 @@ async def predict(
 
         # Forward pass through model
         with torch.no_grad():
-            output = modelClass.model.predict_step(input, 0)
+            batch_idx = -1  # For running in deployment mode
+            output = modelClass.model.predict_step(input, batch_idx)
             output_response = {"results": output}
 
     else:
@@ -182,7 +173,8 @@ async def predict_multiple(
         input = {"data": torch.stack(images), "label": labels}
 
         with torch.no_grad():
-            output = modelClass.model.predict_step(input, 0)
+            batch_idx = -1  # For running in deployment mode
+            output = modelClass.model.predict_step(input, batch_idx)
             output_response = {"results": output}
 
     else:

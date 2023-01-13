@@ -83,5 +83,4 @@ class PlantVillage(Dataset):
         dataloader = torch.utils.data.DataLoader(
             self, batch_size=batch_size, shuffle=shuffle, num_workers=num_workers
         )
-
         return dataloader

@@ -73,9 +73,26 @@ class ImageClassification(LightningModule):
         # Compute accuracy
         pred_class = pred_class.reshape(y.shape)
         val_acc = torch.mean((pred_class == y).float())
-        # val_acc = ( torch.sum(pred_class == y) / len(y)).item()
 
         # Log to W&B dashboard
         self.log("val_loss", loss)
         self.log("val_acc", val_acc)
         return loss
+
+    def predict_step(self, batch, batch_idx):
+        x, y = batch["data"], batch["label"]
+        z = self.log_softmax(self.model(x))
+
+        # Compute loss and probability of prediction
+        loss = F.nll_loss(z, y)
+        log_prob, pred_class = torch.topk(z, k=1)
+        prob = torch.exp(log_prob)
+
+        # Compute accuracy
+        pred_class = pred_class.reshape(y.shape)
+        test_acc = torch.mean((pred_class == y).float())
+
+        # Log to W&B dashboard
+        #self.log("test_loss", loss)
+        #self.log("test_acc", test_acc)
+        return pred_class

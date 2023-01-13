@@ -1,4 +1,4 @@
-name: "Run tests"
+name: "Run Mac OS"
 
 on:
   push:
@@ -14,14 +14,14 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest]
+        os: [macos-latest]
         python-version: ["3.9", "3.10"]
-        pytorch-version: ["1.11.0", "1.12.0"]
+        pytorch-version: ["1.13.0"]
 
     steps:
     - name: Checkout
       uses: actions/checkout@v2
-    
+
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v2
       with:
@@ -49,6 +49,4 @@ jobs:
 
     - name: Generate Report
       run: |
-        pip install pytest
-        pip install coverage
         coverage run -m pytest -v

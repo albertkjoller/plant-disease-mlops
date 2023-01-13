@@ -23,6 +23,5 @@ timm
 hydra-core
 wandb
 torch_tb_profiler
-pytest
 protobuf==3.20
 pre-commit

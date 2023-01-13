@@ -69,13 +69,18 @@ def train(config):
     )
     model.to(device)
 
+    # Define log-name
+    log_name = f"{experiment.experiment_name}.lr={experiment.training.lr}.batch_size={experiment.training.batch_size}.seed={experiment.training.seed}"
+
     # Train model
     trainer = Trainer(
         max_epochs=experiment.training.epochs,
         accelerator=accelerator_type,
         devices=num_devices,
         logger=WandbLogger(
-            name=f"{experiment.experiment_name}-{int(time.time())}", project=config.version, entity=loggers.wandb_entity
+            name=f"{log_name}-{int(time.time())}",
+            project=config.version,
+            entity=loggers.wandb_entity,
         ),
     )
     trainer.fit(model, train_loader, val_loader)

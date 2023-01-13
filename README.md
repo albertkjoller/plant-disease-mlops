@@ -4,7 +4,10 @@ Classification of Plant Diseases using Computer Vision
 
 Course project for 02476 - Machine Learning Operations @ DTU (January 2023)
 
-[![build status](https://github.com/albertkjoller/plant-disease-mlops/actions/workflows/tests.yml/badge.svg)](https://github.com/albertkjoller/plant-disease-mlops/actions/workflows/tests.yml)
+[![build status](https://github.com/albertkjoller/plant-disease-mlops/actions/workflows/ubuntu.yml/badge.svg)](https://github.com/albertkjoller/plant-disease-mlops/actions/workflows/ubuntu.yml)
+[![build status](https://github.com/albertkjoller/plant-disease-mlops/actions/workflows/macos.yml/badge.svg)](https://github.com/albertkjoller/plant-disease-mlops/actions/workflows/macos.yml)
+[![build status](https://github.com/albertkjoller/plant-disease-mlops/actions/workflows/windows.yml/badge.svg)](https://github.com/albertkjoller/plant-disease-mlops/actions/workflows/windows.yml)
+[![build status](https://github.com/albertkjoller/plant-disease-mlops/actions/workflows/coverage.yml/badge.svg)](https://github.com/albertkjoller/plant-disease-mlops/actions/workflows/coverage.yml)
 
 ## Project Description
 
@@ -164,8 +167,8 @@ wandb agent aap_dtu_mlops/sweeps_demo/sweep_id
 * [x] Write unit tests related to model construction
 * [x] Calculate the coverage.
 * [x] Get some continuous integration running on the github repository
-* [ ] (optional) Create a new project on `gcp` and invite all group members to it
-* [ ] Create a data storage on `gcp` for you data
+* [x] (optional) Create a new project on `gcp` and invite all group members to it
+* [x] Create a data storage on `gcp` for you data
 * [ ] Create a trigger workflow for automatically building your docker images
 * [ ] Get your model training on `gcp`
 * [ ] Play around with distributed data loading

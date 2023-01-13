@@ -21,6 +21,7 @@ import sys
 import datetime, time
 
 from src.models.model import ImageClassification
+from app.app_utils import get_labels # get labels dictionary here
 
 
 class ModelWrapper:

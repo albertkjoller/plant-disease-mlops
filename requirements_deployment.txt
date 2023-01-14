@@ -5,4 +5,6 @@ opencv-python
 python-multipart
 ndjson
 google.cloud
-httpx 
+httpx
+fastapi_scheduler 
+shutil

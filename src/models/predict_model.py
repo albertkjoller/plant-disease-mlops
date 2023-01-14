@@ -18,7 +18,7 @@ log = logging.getLogger(__name__)
 @hydra.main(config_path="../configs", config_name="defaults.yaml", version_base="1.1")
 def predict(config) -> None:
     parser = argparse.ArgumentParser(description="Prediction arguments")
-    parser.add_argument("--model_checkpoint", default=f"models/exp1/{os.listdir('models/exp1')[0]}")
+    parser.add_argument("--model_checkpoint", default='models/exp1/epoch=00-val_acc=0.69-13-01-2023 22:45:11.ckpt')
     args = parser.parse_args()
     print(args)
     print(f"\nRunning on CUDA? {torch.cuda.is_available()}")
@@ -54,9 +54,7 @@ def predict(config) -> None:
     )
 
     # Initialize model
-    model = ImageClassification(
-        lr=experiment.training.lr, n_classes=testData.n_classes
-    )
+    model = ImageClassification()
 
     # define model path here
     model = model.load_from_checkpoint(args.model_checkpoint)

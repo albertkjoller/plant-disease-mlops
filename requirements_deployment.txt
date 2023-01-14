@@ -7,4 +7,3 @@ ndjson
 google.cloud
 httpx
 fastapi_scheduler 
-shutil

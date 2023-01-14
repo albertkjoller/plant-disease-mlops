@@ -7,3 +7,5 @@ ndjson
 google.cloud
 httpx
 fastapi_scheduler 
+aiosqlite
+fastapi_amis_admin==0.4.2

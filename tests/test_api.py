@@ -4,7 +4,21 @@ import pytest
 from fastapi import FastAPI
 import httpx
 from fastapi.testclient import TestClient
+#############################
+# fix for path, but very ugly
+from pathlib import Path
+import os
+import sys
+myDir = os.getcwd()
+path = Path(f"{myDir}/app")
+a=str(path.parent.absolute())
+sys.path.append(a)
+from app.main import router
+##############################
+
 from app.app_setup import create_app
+#from tests import _PATH_DATA
+
 
 app = create_app()
 client = TestClient(app)

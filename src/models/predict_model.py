@@ -8,6 +8,16 @@ from pytorch_lightning import Trainer
 import hydra
 from hydra.utils import to_absolute_path
 import argparse
+#############################
+# fix for path, but very ugly
+from pathlib import Path
+import os
+import sys
+myDir = os.getcwd()
+path = Path(f"{myDir}/app")
+a=str(path.parent.absolute())
+sys.path.append(a)
+##############################
 from app.app_utils import get_base_model
 import os
 

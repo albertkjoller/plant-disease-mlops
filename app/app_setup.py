@@ -6,9 +6,21 @@ from fastapi_amis_admin.admin.settings import Settings
 from fastapi_amis_admin.admin.site import AdminSite
 import os
 import shutil
-from main import router
+#from main import router
 #from app.main import router
 import uvicorn
+
+#############################
+# fix for path, but very ugly
+from pathlib import Path
+import os
+import sys
+myDir = os.getcwd()
+path = Path(f"{myDir}/app")
+a=str(path.parent.absolute())
+sys.path.append(a)
+from app.main import router
+##############################
 
 def create_app():
     app = FastAPI()

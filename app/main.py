@@ -11,7 +11,7 @@ import cv2
 import torch
 
 #from app.app_utils import ModelWrapper,model_loaded
-from app_utils import ModelWrapper,model_loaded,get_base_model
+from app.app_utils import ModelWrapper,model_loaded,get_base_model
 
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates

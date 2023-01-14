@@ -17,7 +17,7 @@ from app.main import router
 ##############################
 
 from app.app_setup import create_app
-#from tests import _PATH_DATA
+from tests import _PATH_DATA
 
 
 app = create_app()

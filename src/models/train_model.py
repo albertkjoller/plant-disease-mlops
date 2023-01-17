@@ -10,6 +10,7 @@ import yaml
 import torch
 from pytorch_lightning import Trainer
 from pytorch_lightning.loggers import WandbLogger
+from pytorch_lightning.callbacks import ModelCheckpoint
 
 from src.data.dataloader import PlantVillage
 from src.models.model import ImageClassification
@@ -72,6 +73,19 @@ def train(config):
     # Define log-name
     log_name = f"{experiment.experiment_name}.lr={experiment.training.lr}.batch_size={experiment.training.batch_size}.seed={experiment.training.seed}"
 
+
+    # Define model checkpoint
+    save_path = Path(to_absolute_path(paths.save_path)) / experiment.experiment_name
+    if not(os.path.exists(save_path) and os.path.isdir(save_path)):
+        os.makedirs(save_path)
+
+    checkpoint_callback = ModelCheckpoint(
+    save_top_k=3,
+    monitor="val_acc",
+    mode="min",
+    dirpath=save_path,
+    filename="-{epoch:02d}-{val_acc:.2f}",
+)
     # Train model
     trainer = Trainer(
         max_epochs=experiment.training.epochs,
@@ -82,20 +96,10 @@ def train(config):
             project=config.version,
             entity=loggers.wandb_entity,
         ),
+        callbacks=[checkpoint_callback],
     )
+
     trainer.fit(model, train_loader, val_loader)
-
-    # Determines what information to store in checkpoint
-    checkpoint = {
-        "configuration": config,
-        "state_dict": model.state_dict(),
-        "save_time": time.time(),
-    }
-
-    # Create folder and save checkpoint/model
-    save_path = Path(to_absolute_path(paths.data_path)) / experiment.experiment_name
-    os.makedirs(save_path)
-    torch.save(checkpoint, save_path / "final.pth")
 
 
 if __name__ == "__main__":

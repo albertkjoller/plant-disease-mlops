@@ -3,6 +3,8 @@ import torch
 from pytorch_lightning import LightningModule
 import torch.nn.functional as F
 
+from app.app_utils import get_labels  # get labels dictionary here
+
 
 class ImageClassification(LightningModule):
     """
@@ -73,9 +75,50 @@ class ImageClassification(LightningModule):
         # Compute accuracy
         pred_class = pred_class.reshape(y.shape)
         val_acc = torch.mean((pred_class == y).float())
-        # val_acc = ( torch.sum(pred_class == y) / len(y)).item()
 
         # Log to W&B dashboard
         self.log("val_loss", loss)
         self.log("val_acc", val_acc)
         return loss
+
+    def predict_step(self, batch, batch_idx):
+        x, y = batch["data"], batch["label"]
+        z = self.log_softmax(self.model(x))
+
+        if batch_idx != -1:
+            # Compute loss and probability of prediction
+            loss = F.nll_loss(z, y)
+            log_prob, pred_class = torch.topk(z, k=1)
+            prob = torch.exp(log_prob)
+
+            # Compute accuracy
+            pred_class = pred_class.reshape(y.shape)
+            test_acc = torch.mean((pred_class == y).float())
+
+            # Log to W&B dashboard
+            # self.log("test_loss", loss)
+            # self.log("test_acc", test_acc)
+            return pred_class
+
+        else:  # consistently set to -1 in deployment mode
+            # Get label dictionary
+            self.idx2class = get_labels()
+            self.class2idx = {v: int(k) for (k, v) in self.idx2class.items()}
+
+            # Get topK predictions
+            K = 5
+            log_prob, pred_class = torch.topk(z, k=K)
+            prob = torch.exp(log_prob)
+
+            output = {
+                y[i]: {
+                    i: {
+                        "pred": pred_[i].item(),
+                        "prob": prob_[i].item(),
+                        "label": self.idx2class[pred_[i].item()],
+                    }
+                    for i in range(K)
+                }
+                for i, (pred_, prob_) in enumerate(zip(pred_class, prob))
+            }
+            return output

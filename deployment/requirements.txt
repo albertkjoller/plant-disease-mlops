@@ -5,7 +5,8 @@ opencv-python
 python-multipart
 ndjson
 google.cloud
+pytorch-lightning
+timm
 httpx
-fastapi_scheduler 
+fastapi-scheduler
 aiosqlite
-fastapi_amis_admin==0.4.2

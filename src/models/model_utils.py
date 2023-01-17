@@ -1,10 +1,8 @@
-from google.cloud import storage
-import ndjson
+import json
+
 
 def get_labels():
-    client = storage.Client("plant-disease-mlops")
-    bucket = client.get_bucket("plant-disease-labels_bucket")
-    blob = bucket.blob("labels.json")
-    labels = ndjson.loads(blob.download_as_string())[0]
-    labels = {int(k): v for k, v in labels.items()}
+    with open("./deployment/app/static/assets/labels/labels.json") as f:
+        labels = json.load(f)
+    labels = {int(k): v for (k, v) in labels.items()}
     return labels

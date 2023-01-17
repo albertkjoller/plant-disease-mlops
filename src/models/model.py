@@ -114,7 +114,7 @@ class ImageClassification(LightningModule):
                 y[i]: {
                     i: {
                         "pred": pred_[i].item(),
-                        "prob": prob_[i].item(),
+                        "prob": round(prob_[i].item(), 3),
                         "label": self.idx2class[pred_[i].item()],
                     }
                     for i in range(K)

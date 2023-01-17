@@ -21,7 +21,9 @@
 
 {% if file_upload_result['message']=='OK' %}
     <div class="bg-green rounded-lg m-3" style="background-color: #00d768;">
-    <p>File Upload: {{ file_upload_result }}</p>
+    <p>Current status: </p>
+    <p> {{ file_upload_result }}</p>
+    <br>
     <p>Model Succesfully loaded</p>
     </div>
 {% else %}

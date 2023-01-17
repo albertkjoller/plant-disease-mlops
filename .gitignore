@@ -89,6 +89,8 @@ target/
 .mypy_cache/
 /data
 temp/
+images/
+labels/
 
 # Logs
 lightning_logs/

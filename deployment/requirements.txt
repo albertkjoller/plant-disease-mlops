@@ -4,4 +4,6 @@ uvicorn[standard]
 opencv-python
 python-multipart
 ndjson
-google.cloud 
+google.cloud
+pytorch-lightning
+timm

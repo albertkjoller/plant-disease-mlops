@@ -3,7 +3,7 @@ import torch
 from pytorch_lightning import LightningModule
 import torch.nn.functional as F
 
-from app.app_utils import get_labels  # get labels dictionary here
+from deployment.app.app_utils import get_labels  # get labels dictionary here
 
 
 class ImageClassification(LightningModule):

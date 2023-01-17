@@ -1,0 +1,38 @@
+{% extends "layout.html"%}
+{% block content%}
+
+<div class="col-sm-4">
+
+<form action="viz_model_checkpoint" enctype="multipart/form-data" method="post" autocomplete="off">
+    <div class="mb-3">
+        <div class="bg-light p-3 rounded-lg m-3">
+            <label for="file" class="form-label"><b>Upload a model checkpoint here. If you don't have any, then a default checkpoint is chosen.</b> </label>
+            <input class="form-control" type="file" id="file" name="file">
+        </div>
+    </div>
+
+    <div class="bg-light rounded-lg m-3">
+        <div class="d-grid gap-2">
+            <button class="btn btn-primary" type="button submit"><i class="bx bxs-cloud-upload"
+                    style="font-size:1.4em;"></i> Upload Checkpoint</button>
+        </div>
+    </div>
+</form>
+
+{% if file_upload_result['message']=='OK' %}
+    <div class="bg-green rounded-lg m-3" style="background-color: #00d768;">
+    <p>Current status: </p>
+    <p> {{ file_upload_result }}</p>
+    <br>
+    <p>Model Succesfully loaded</p>
+    </div>
+{% else %}
+<div class="bg-red rounded-lg m-3" style="background-color: #d70400;">
+    <p>File Upload: {{ file_upload_result }}</p>
+    </div>
+{% endif %}
+
+
+</div>
+
+{% endblock content%}

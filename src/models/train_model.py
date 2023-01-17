@@ -16,6 +16,7 @@ from src.data.dataloader import PlantVillage
 from src.models.model import ImageClassification
 
 import logging
+import datetime
 
 log = logging.getLogger(__name__)
 
@@ -80,12 +81,11 @@ def train(config):
         os.makedirs(save_path)
 
     checkpoint_callback = ModelCheckpoint(
-    save_top_k=3,
+    save_top_k=1,
     monitor="val_acc",
     mode="min",
     dirpath=save_path,
-    filename="-{epoch:02d}-{val_acc:.2f}",
-)
+    filename="{epoch:02d}-{val_acc:.2f}-"+f"""{(datetime.datetime.now()).strftime("%d_%m_%Y %H:%M:%S")}""")
     # Train model
     trainer = Trainer(
         max_epochs=experiment.training.epochs,

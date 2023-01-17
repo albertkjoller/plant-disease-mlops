@@ -1,0 +1,78 @@
+{% extends "layout.html"%}
+{% block content%}
+
+<div class="col-sm-4">
+
+<form action="viz_model_inference" enctype="multipart/form-data" method="post" autocomplete="off">
+    <div class="mb-3">
+        <div class="bg-light p-3 rounded-lg m-3">
+            <label for="files" class="form-label"><b>Upload Data</b> </label>
+            <input class="form-control" type="file" id="files" name="files" multiple>
+        </div>
+    </div>
+
+    <div class="bg-light rounded-lg m-3">
+        <div class="d-grid gap-2">
+            <button class="btn btn-primary" type="button submit"><i class="bx bxs-cloud-upload"
+                    style="font-size:1.4em;"></i> Upload Data</button>
+        </div>
+    </div>
+</form>
+
+</div>
+
+<div class="slideshow-container">
+    {% if image_upload_result['message']=='OK' %}
+    <p><b>Data has succesfuly been uploaded</b></p> <br>
+    <p><b>Click on the dots to investigate the model predictions!</b></p>
+    {% elif model_loaded == True %}
+    <p><b>Oups... Something went wrong when uploading the data. Please try again.</b></p> <br>
+    {% else %}
+    <p><b>Oups... It looks like a model checkpoint has not been uploaded yet.</b></p> <br>
+    {% endif %}
+
+    <!-- Full-width images with number and caption text -->
+    {% for image in images %}
+        <div class="mySlides fade">
+        <div class="numbertext">{{ loop.index }} / {{ num_images }}</div>
+        <img src="{{url_for('static', path=image)}}" style="width:100%">
+        <div class="text">
+        </div>
+        <table class="tg">
+            <thead>
+              <tr>
+                <th class="tg-0lax"><b>Top 5 Predictions</b></th>
+                <th class="tg-0lax"><b>Prediction</b></th>
+                <th class="tg-0lax"><b>Probability</b></th>
+              </tr>
+            </thead>
+            <tbody>
+        {% set imageloop = loop %}
+        {% for numb in num_predictions %}
+            <tr>
+            <td class="tg-0lax">{{ loop.index }}</td>
+            <td class="tg-0lax">{{ output['results'][raw_path[imageloop.index0]][loop.index0 ]['label'] }}</td>
+            <td class="tg-0lax">{{ output['results'][raw_path[imageloop.index0]][loop.index0 ]['prob'] }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+        </div>
+    {% endfor %}
+
+    <!-- Next and previous buttons -->
+    <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
+    <a class="next" onclick="plusSlides(1)">&#10095;</a>
+  </div>
+  <br>
+
+  <!-- The dots/circles -->
+  <div style="text-align:center">
+    {% for image in images %}
+        <span class="dot" onclick="currentSlide({{ loop.index }})"></span>
+    {% endfor %}
+  </div>
+
+
+
+{% endblock content%}

@@ -1,99 +1,72 @@
-import uvicorn
 from http import HTTPStatus
-from fastapi import FastAPI
+from fastapi import Request
 from fastapi import UploadFile, File
 
+# from fastapi.responses import RedirectResponse
+
 import os
-import datetime, time
+import glob
+from pathlib import Path
 from typing import Optional, List
 
 import cv2
 import torch
 
-from src.models.model import ImageClassification
+from deployment.app.app_utils import ModelWrapper
 
+from fastapi.templating import Jinja2Templates
+import secrets
+from fastapi import APIRouter
 
-class ModelWrapper:
-    def __init__(self):
-        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-        _ = self.load_model("temp/models/trained_model.pth")
+router = APIRouter()
+templates = Jinja2Templates(directory="./deployment/app/templates")
 
-        # Create temporary data-folder
-        os.makedirs("temp/data", exist_ok=True)
-        os.makedirs("temp/models", exist_ok=True)
-
-    def load_model(self, torch_filepath):
-        try:
-            checkpoint = torch.load(torch_filepath)
-
-            # Change load status
-            self.loaded = True
-            self.filepath = torch_filepath
-
-            # Setup model
-            self.model = ImageClassification(
-                lr=checkpoint["training_parameters"]["lr"], n_classes=38
-            )
-            self.model.load_state_dict(checkpoint["state_dict"])
-            self.model.to(self.device)
-            self.model.eval()
-
-            # Return save-time
-            self.load_time = datetime.datetime.fromtimestamp(int(time.time()))
-            self.save_time = datetime.datetime.fromtimestamp(
-                int(checkpoint["save_time"])
-            )
-
-            # Save response
-            self.model_response = {
-                "loaded": self.loaded,
-                "filepath": self.filepath,
-                "savetime": self.save_time,
-                "loadtime": self.load_time,
-            }
-
-        except FileNotFoundError:
-            self.model_response = {"loaded": False}
-
-
-app = FastAPI()
+hash_ = secrets.token_hex(8)
 modelClass = ModelWrapper()
 
 
-@app.get("/")
+@router.get("/")
 def root():
     """Health check."""
 
-    response = {
-        "root": True,
+    file_upload_result = {
+        "upload-successful": True,
         "model": modelClass.model_response,
         "message": HTTPStatus.OK.phrase,
         "status-code": HTTPStatus.OK,
     }
-    return response
+
+    modelClass.file_upload_result = file_upload_result
+    return file_upload_result
 
 
-@app.post("/upload_model")
-async def upload_model(file: UploadFile = File(...)):
-    # Store model locally
-    with open("temp/models/" + file.filename, "wb") as f:
+@router.post("/upload_model")
+async def upload_model(file: Optional[UploadFile] = None):
+
+    os.makedirs(f"deployment/app/static/assets/models/{hash_}", exist_ok=True)
+    path_ = f"""deployment/app/static/assets/models/{hash_}"""
+
+    with open(f"{path_}/" + file.filename, "wb") as f:
         content = await file.read()
         f.write(content)
         f.close()
 
     response = {
-        "upload-successfull": True,
-        "model": {"filepath": file.filename},
+        "upload-successful": True,
+        "model": {"filepath": f"{path_}/{file.filename}"},
         "message": HTTPStatus.OK.phrase,
         "status-code": HTTPStatus.OK,
     }
     return response
 
 
-@app.post("/load_model")
-def load_model(model_name: str):
+@router.post("/load_model")
+def load_model(model_name: Optional[str] = None):
     # Load from temporary storage
-    modelClass.load_model("temp/models/" + model_name)
+    model_name = "default.pth" if model_name == None else f"{hash_}/{model_name}"
+    modelClass.load_model(
+        f"deployment/app/static/assets/models/{model_name}"
+    )  # hash+model_name
 
     response = {
         "model": modelClass.model_response,
@@ -103,36 +76,35 @@ def load_model(model_name: str):
     return response
 
 
-@app.post("/predict/")
+@router.post("/predict")
 async def predict(
-    file: UploadFile = File(...), h: Optional[int] = 56, w: Optional[int] = 56
+    file: Optional[UploadFile] = None, h: Optional[int] = 56, w: Optional[int] = 56
 ):
 
-    if modelClass.loaded == True:
-        # Store image on server
-        with open("temp/data/" + file.filename, "wb") as f:
-            content = await file.read()
-            f.write(content)
-            f.close()
+    os.makedirs(f"deployment/app/static/assets/images/{hash_}", exist_ok=True)
+    path_ = f"""deployment/app/static/assets/images/{hash_}"""
 
-        # Load image
-        image = cv2.imread("temp/data/" + file.filename)
-        image = cv2.resize(image, (h, w))
-        image = torch.FloatTensor(image).view(1, -1, h, w).to(modelClass.device)
-        if image.max() > 1.0:
-            image /= 256
+    # Store image on server
+    with open(f"{path_}/{file.filename}", "wb") as f:
+        content = await file.read()
+        f.write(content)
+        f.close()
 
-        # Setup input
-        input = {"data": image, "label": file.filename.split(os.sep)[-1]}
+    # Load image
+    image = cv2.imread(f"""{path_}/{file.filename}""")
+    image = cv2.resize(image, (h, w))
+    image = torch.FloatTensor(image).view(1, -1, h, w).to(modelClass.device)
+    if image.max() > 1.0:
+        image /= 256
 
-        # Forward pass through model
-        with torch.no_grad():
-            batch_idx = -1  # For running in deployment mode
-            output = modelClass.model.predict_step(input, batch_idx)
-            output_response = {"results": output}
+    # Setup input
+    input = {"data": image, "label": file.filename.split(os.sep)[-1]}
 
-    else:
-        output_response = {"results": None}
+    # Forward pass through model
+    with torch.no_grad():
+        batch_idx = -1  # For running in deployment mode
+        output = modelClass.model.predict_step(input, batch_idx)
+        output_response = {"results": output}
 
     response = {
         "output": output_response,
@@ -143,24 +115,24 @@ async def predict(
     return response
 
 
-@app.post("/predict_multiple/")
+@router.post("/predict_multiple")
 async def predict_multiple(
     files: List[UploadFile] = File(...), h: Optional[int] = 56, w: Optional[int] = 56
 ):
 
     images, labels = [], []
     if modelClass.loaded == True:
-        for data in files:
-            print("\n\n\n")
-            print(data.filename)
-            print("\n\n\n")
+        # hash_ = secrets.token_hex(8)
+        os.makedirs(f"deployment/app/static/assets/images/{hash_}", exist_ok=True)
+        path_ = f"""deployment/app/static/assets/images/{hash_}"""
 
-            with open("temp/data/" + data.filename, "wb") as f:
+        for data in files:
+            with open(f"""{path_}/{data.filename}""", "wb") as f:
                 content = await data.read()
                 f.write(content)
                 f.close()
 
-            image = cv2.imread("temp/data/" + data.filename)
+            image = cv2.imread(f"""{path_}/{data.filename}""")
             image = cv2.resize(image, (h, w))
             image = torch.FloatTensor(image).view(-1, h, w).to(modelClass.device)
             if image.max() > 1.0:
@@ -188,6 +160,135 @@ async def predict_multiple(
     return response
 
 
-if __name__ == "__main__":
-    # Run application
-    uvicorn.run(app, host="127.0.0.1", port=8000)
+## Viz endpoint
+@router.get("/viz_model_checkpoint")
+def checkpoint(request: Request):
+    output = templates.TemplateResponse(
+        "modelcheckpoint.html",
+        context={
+            "request": request,
+            "file_upload_result": modelClass.file_upload_result,
+        },
+    )
+    return output
+
+
+@router.post("/viz_model_checkpoint")
+async def checkpoint(request: Request, file: UploadFile):
+
+    if file.filename == "":
+        checkpoint_name = "default.pth"  # get default model checkpoint
+        path_ = "deployment/app/static/assets/models"
+
+    else:
+        os.makedirs(f"deployment/app/static/assets/models/{hash_}", exist_ok=True)
+        path_ = f"""deployment/app/static/assets/models/{hash_}"""
+
+        with open(f"{path_}/" + file.filename, "wb") as f:
+            content = await file.read()
+            f.write(content)
+            f.close()
+
+        checkpoint_name = file.filename
+
+    modelClass.load_model(f"{path_}/{checkpoint_name}")
+    file_upload_result = {
+        "upload-successful": True,
+        "model": modelClass.model_response,
+        "message": HTTPStatus.OK.phrase,
+        "status-code": HTTPStatus.OK,
+    }
+    modelClass.file_upload_result = file_upload_result
+
+    return templates.TemplateResponse(
+        "modelcheckpoint.html",
+        context={"request": request, "file_upload_result": file_upload_result},
+    )
+
+
+@router.get("/viz_model_inference")
+def inference(request: Request):
+    output = templates.TemplateResponse(
+        "inference.html",
+        context={
+            "request": request,
+            "image_upload_result": "",
+            "model_loaded": modelClass.loaded,
+        },
+    )
+    return output
+
+
+@router.post("/viz_model_inference")
+async def inference(request: Request, files: Optional[List[UploadFile]] = None):
+
+    test_ = False
+    images, labels = [], []
+    w, h = 56, 56
+
+    # try:
+    if modelClass.loaded == True:
+        os.makedirs(f"deployment/app/static/assets/images/{hash_}", exist_ok=True)
+        path_ = f"""deployment/app/static/assets/images/{hash_}"""
+
+        for data in files:
+            with open(f"""{path_}/{data.filename}""", "wb") as f:
+                content = await data.read()
+                f.write(content)
+                f.close()
+
+            image = cv2.imread(f"""{path_}/{data.filename}""")
+            image = cv2.resize(image, (h, w))
+            image = torch.FloatTensor(image).view(-1, h, w).to(modelClass.device)
+            if image.max() > 1.0:
+                image /= 256
+
+            images.append(image)
+            labels.append(
+                data.filename.split(os.sep)[-1] if not test_ else data.split(os.sep)[-1]
+            )
+
+            input = {"data": torch.stack(images), "label": labels}
+            with torch.no_grad():
+                batch_idx = -1  # For running in deployment mode
+                output = modelClass.model.predict_step(input, batch_idx)
+                output_response = {"results": output}
+
+        images = []
+        extensions = [".jpg", ".png", ".jpeg"]
+        for ext in extensions:
+            img_paths = glob.glob(Path(f"{path_}/*{ext}").as_posix())
+            images += [(os.sep).join(p_.split("/")[3:]) for p_ in img_paths]
+
+        files_list = [img.split(os.sep)[-1] for img in images]
+
+        # files_list = [x for x in os.listdir(path_) if x != '.DS_Store']
+        # images = [f"{path_[11:]}/{x}" for x in files_list]
+
+    else:
+        output_response = {"results": None}
+
+    image_upload_result = {
+        "output": output_response,
+        "model": modelClass.model_response,
+        "message": HTTPStatus.OK.phrase,
+        "status-code": HTTPStatus.OK,
+    }
+
+    output = templates.TemplateResponse(
+        "inference.html",
+        context={
+            "request": request,
+            "image_upload_result": image_upload_result,
+            "images": images,
+            "num_images": len(images),
+            "output": output_response,
+            "raw_path": files_list,
+            "num_predictions": list(range(5)),
+            "model_loaded": modelClass.loaded,
+        },
+    )
+    return output
+
+    # except:
+    #    return RedirectResponse(url='/viz_model_inference')

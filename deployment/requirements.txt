@@ -7,3 +7,6 @@ ndjson
 google.cloud
 pytorch-lightning
 timm
+httpx
+fastapi-scheduler
+aiosqlite

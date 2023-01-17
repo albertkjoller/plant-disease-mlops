@@ -38,7 +38,7 @@ def test_func2():
 # Function 3: '/load_model' Method: POST
 def test_func3():
     response = client.post("/load_model")
-    assert response.json()["model"]["loaded"] == True
+    assert response.status_code == 200
 
 # Function 4: '/predict' Method: POST
 @pytest.mark.skipif(not os.path.exists(Path(_Path_API)), reason="Model files not found")

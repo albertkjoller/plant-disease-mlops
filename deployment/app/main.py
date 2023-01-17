@@ -1,8 +1,11 @@
 from http import HTTPStatus
 from fastapi import Request
 from fastapi import UploadFile, File
+from fastapi import BackgroundTasks
 
-# from fastapi.responses import RedirectResponse
+from evidently.report import Report
+from evidently.metric_preset import DataDriftPreset, DataQualityPreset, TargetDriftPreset
+from fastapi.responses import HTMLResponse
 
 import os
 import glob
@@ -12,11 +15,15 @@ from typing import Optional, List
 import cv2
 import torch
 
-from deployment.app.app_utils import ModelWrapper
+from deployment.app.app_utils import ModelWrapper,update_log,prepare_feature,get_train_distribution
 
 from fastapi.templating import Jinja2Templates
 import secrets
 from fastapi import APIRouter
+import pandas as pd
+import numpy as np
+import datetime
+from csv import writer
 
 router = APIRouter()
 templates = Jinja2Templates(directory="./deployment/app/templates")
@@ -24,6 +31,11 @@ templates = Jinja2Templates(directory="./deployment/app/templates")
 hash_ = secrets.token_hex(8)
 modelClass = ModelWrapper()
 
+if not os.path.exists('deployment/app/current_data.csv'):
+    with open('deployment/app/current_data.csv', 'w') as file:
+        header = ['timestamp', 'mean', 'std', 'min', 'max', 'Q1', 'Q3']
+        writer_obj = writer(file)
+        writer_obj.writerow(header)
 
 @router.get("/")
 def root():
@@ -77,7 +89,7 @@ def load_model(model_name: Optional[str] = None):
 
 
 @router.post("/predict")
-async def predict(
+async def predict(background_tasks: BackgroundTasks,
     file: Optional[UploadFile] = None, h: Optional[int] = 56, w: Optional[int] = 56
 ):
 
@@ -89,7 +101,7 @@ async def predict(
         content = await file.read()
         f.write(content)
         f.close()
-
+    
     # Load image
     image = cv2.imread(f"""{path_}/{file.filename}""")
     image = cv2.resize(image, (h, w))
@@ -106,6 +118,10 @@ async def predict(
         output = modelClass.model.predict_step(input, batch_idx)
         output_response = {"results": output}
 
+    timestamp = str(datetime.datetime.now())
+    features = prepare_feature(image[0])
+    background_tasks.add_task(update_log,timestamp,features)
+
     response = {
         "output": output_response,
         "model": modelClass.model_response,
@@ -116,7 +132,7 @@ async def predict(
 
 
 @router.post("/predict_multiple")
-async def predict_multiple(
+async def predict_multiple(background_tasks: BackgroundTasks,
     files: List[UploadFile] = File(...), h: Optional[int] = 56, w: Optional[int] = 56
 ):
 
@@ -137,6 +153,10 @@ async def predict_multiple(
             image = torch.FloatTensor(image).view(-1, h, w).to(modelClass.device)
             if image.max() > 1.0:
                 image /= 256
+
+            timestamp = str(datetime.datetime.now())
+            features = prepare_feature(image)
+            background_tasks.add_task(update_log,timestamp,features)
 
             images.append(image)
             labels.append(data.filename.split(os.sep)[-1])
@@ -220,7 +240,7 @@ def inference(request: Request):
 
 
 @router.post("/viz_model_inference")
-async def inference(request: Request, files: Optional[List[UploadFile]] = None):
+async def inference(request: Request,background_tasks: BackgroundTasks, files: Optional[List[UploadFile]] = None):
 
     test_ = False
     images, labels = [], []
@@ -247,6 +267,10 @@ async def inference(request: Request, files: Optional[List[UploadFile]] = None):
                 data.filename.split(os.sep)[-1] if not test_ else data.split(os.sep)[-1]
             )
 
+            timestamp = str(datetime.datetime.now())
+            features = prepare_feature(image)
+            background_tasks.add_task(update_log,timestamp,features)
+            
             input = {"data": torch.stack(images), "label": labels}
             with torch.no_grad():
                 batch_idx = -1  # For running in deployment mode
@@ -285,3 +309,27 @@ async def inference(request: Request, files: Optional[List[UploadFile]] = None):
         },
     )
     return output
+
+
+@router.get("/monitoring", response_class=HTMLResponse)
+async def monitoring(
+
+):
+    reference_data = get_train_distribution()
+
+    current_data =  pd.read_csv('deployment/app/current_data.csv')
+    current_data = current_data.drop(columns=['timestamp'])
+
+    data_drift_report = Report(metrics=[
+        DataDriftPreset(),
+        DataQualityPreset(),
+        TargetDriftPreset(),
+    ])
+
+    data_drift_report.run(current_data=current_data, reference_data=reference_data)
+    data_drift_report.save_html('monitoring.html')
+
+    with open("monitoring.html", "r", encoding='utf-8') as f:
+        html_content = f.read()
+
+    return HTMLResponse(content=html_content, status_code=200)

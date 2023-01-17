@@ -6,6 +6,14 @@ import os
 import datetime
 from google.cloud import storage
 import ndjson
+from csv import writer
+from PIL import Image, ImageEnhance
+from transformers import CLIPProcessor, CLIPModel
+import numpy as np
+import pandas as pd
+model = CLIPModel.from_pretrained("openai/clip-vit-base-patch32")
+processor = CLIPProcessor.from_pretrained("openai/clip-vit-base-patch32")
+
 
 
 class ModelWrapper:
@@ -62,16 +70,28 @@ class ModelWrapper:
         except FileNotFoundError:
             self.model_response = {"loaded": False}
 
+def update_log(timestamp : str, features):
+    mu= np.mean(features)
+    sigma = np.std(features)
+    Q0 = np.min(features)
+    Q4=np.max(features)
+    Q1=np.quantile(features,q=0.25)
+    Q3=np.quantile(features,q=0.75)
+    row = [timestamp,mu,sigma,Q0,Q4,Q1,Q3]
+    with open('deployment/app/current_data.csv', 'a') as file:
+        writer_obj = writer(file)
+        writer_obj.writerow(row)
 
-# def get_base_model(name="epoch=00-val_acc=0.69-13-01-2023 22:45:11.ckpt", trainer=False):
-#    client = storage.Client("plant-disease-mlops")
-#    bucket = client.get_bucket("plant-disease-mlops-models")
-#    blob=bucket.blob(name)
-#    if not trainer:
-#        if not os.path.exists(f'deployment/app/static/assets/models/test/{name}'):
-#            blob.download_to_filename(f'deployment/app/static/assets/models/test/{name}')
-#        return name
-#    else:
-#        if not os.path.exists(f'models/{name}'):
-#            blob.download_to_filename(f'models/{name}')
-#        return f'models/{name}'
+def prepare_feature(image):
+    inputs = processor(images=image, return_tensors="pt", padding=True)
+    img_features = model.get_image_features(inputs['pixel_values'])
+    features_np=img_features.detach().numpy()[0]
+    return features_np
+
+def get_train_distribution():
+    if not os.path.exists('deployment/app/reference_data.csv'):
+        client = storage.Client("plant-disease-mlops")
+        bucket = client.get_bucket("plant-disease-mlops-train-distribution")
+        blob = bucket.blob("reference_data.csv")
+        blob.download_to_filename('deployment/app/reference_data.csv')
+    return pd.read_csv('deployment/app/reference_data.csv')

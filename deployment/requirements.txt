@@ -10,3 +10,8 @@ timm
 httpx
 fastapi-scheduler
 aiosqlite
+Pillow
+transformers
+numpy
+pandas
+evidently

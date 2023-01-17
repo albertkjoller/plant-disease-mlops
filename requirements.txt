@@ -25,3 +25,6 @@ wandb
 torch_tb_profiler
 protobuf==3.20
 pre-commit
+uvicorn[standard]
+fastapi
+ndjson

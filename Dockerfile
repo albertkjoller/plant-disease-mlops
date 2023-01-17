@@ -23,6 +23,7 @@ RUN rm DATA_KEY_FILE.json
 COPY src/configs /src/configs
 COPY requirements.txt /requirements.txt
 COPY setup.py /setup.py
+COPY app /app
 
 # copy model training files
 COPY src/data/dataloader.py /src/data/dataloader.py

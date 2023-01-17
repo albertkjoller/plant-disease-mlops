@@ -42,18 +42,18 @@ def root():
 
 @router.post("/upload_model")
 async def upload_model(file: Optional[UploadFile] = None):
-
     os.makedirs(f"deployment/app/static/assets/models/{hash_}", exist_ok=True)
     path_ = f"""deployment/app/static/assets/models/{hash_}"""
 
-    with open(f"{path_}/" + file.filename, "wb") as f:
-        content = await file.read()
-        f.write(content)
-        f.close()
+    if file:
+        with open(f"{path_}/" + file.filename, "wb") as f:
+            content = await file.read()
+            f.write(content)
+            f.close()
 
     response = {
         "upload-successful": True,
-        "model": {"filepath": f"{path_}/{file.filename}"},
+        "model": {"filepath": f"{path_}/{file.filename if file else 'default.pth'}"},
         "message": HTTPStatus.OK.phrase,
         "status-code": HTTPStatus.OK,
     }
@@ -122,7 +122,7 @@ async def predict_multiple(
 
     images, labels = [], []
     if modelClass.loaded == True:
-        # hash_ = secrets.token_hex(8)
+        #hash_ = secrets.token_hex(8)
         os.makedirs(f"deployment/app/static/assets/images/{hash_}", exist_ok=True)
         path_ = f"""deployment/app/static/assets/images/{hash_}"""
 
@@ -225,9 +225,8 @@ async def inference(request: Request, files: Optional[List[UploadFile]] = None):
     test_ = False
     images, labels = [], []
     w, h = 56, 56
-
-    # try:
     if modelClass.loaded == True:
+        hash_ = secrets.token_hex(8)
         os.makedirs(f"deployment/app/static/assets/images/{hash_}", exist_ok=True)
         path_ = f"""deployment/app/static/assets/images/{hash_}"""
 
@@ -262,9 +261,6 @@ async def inference(request: Request, files: Optional[List[UploadFile]] = None):
 
         files_list = [img.split(os.sep)[-1] for img in images]
 
-        # files_list = [x for x in os.listdir(path_) if x != '.DS_Store']
-        # images = [f"{path_[11:]}/{x}" for x in files_list]
-
     else:
         output_response = {"results": None}
 
@@ -289,6 +285,3 @@ async def inference(request: Request, files: Optional[List[UploadFile]] = None):
         },
     )
     return output
-
-    # except:
-    #    return RedirectResponse(url='/viz_model_inference')

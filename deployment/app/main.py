@@ -18,6 +18,8 @@ from typing import Optional, List
 
 import cv2
 import torch
+from torchvision import transforms
+from PIL import Image
 
 from deployment.app.app_utils import (
     ModelWrapper,
@@ -108,11 +110,17 @@ async def predict(
         f.close()
 
     # Load image
-    image = cv2.imread(f"""{path_}/{file.filename}""")
-    image = cv2.resize(image, (h, w))
-    image = torch.FloatTensor(image).view(1, -1, h, w).to(modelClass.device)
-    if image.max() > 1.0:
-        image /= 256
+    transform=transforms.Compose(
+        [
+            transforms.Resize(h),
+            transforms.ToTensor(),
+            transforms.Normalize(mean=[0.0, 0.0, 0.0], std=[1.0, 1.0, 1.0]),
+        ]
+    )
+
+    image = Image.open(f"""{path_}/{file.filename}""")
+    image = transform(image)
+    image = image.unsqueeze(0)
 
     # Setup input
     input = {"data": image, "label": file.filename.split(os.sep)[-1]}
@@ -156,11 +164,16 @@ async def predict_multiple(
             f.write(content)
             f.close()
 
-        image = cv2.imread(f"""{path_}/{data.filename}""")
-        image = cv2.resize(image, (h, w))
-        image = torch.FloatTensor(image).view(-1, h, w).to(modelClass.device)
-        if image.max() > 1.0:
-            image /= 256
+        transform=transforms.Compose(
+            [
+                transforms.Resize(h),
+                transforms.ToTensor(),
+                transforms.Normalize(mean=[0.0, 0.0, 0.0], std=[1.0, 1.0, 1.0]),
+            ]
+        )
+
+        image = Image.open(f"""{path_}/{data.filename}""")
+        image = transform(image)
 
         timestamp = str(datetime.datetime.now())
         features = prepare_feature(image)
@@ -268,11 +281,16 @@ async def inference(
             f.write(content)
             f.close()
 
-        image = cv2.imread(f"""{path_}/{data.filename}""")
-        image = cv2.resize(image, (h, w))
-        image = torch.FloatTensor(image).view(-1, h, w).to(modelClass.device)
-        if image.max() > 1.0:
-            image /= 256
+        transform=transforms.Compose(
+            [
+                transforms.Resize(h),
+                transforms.ToTensor(),
+                transforms.Normalize(mean=[0.0, 0.0, 0.0], std=[1.0, 1.0, 1.0]),
+            ]
+        )
+
+        image = Image.open(f"""{path_}/{data.filename}""")
+        image = transform(image)
 
         images.append(image)
         labels.append(
@@ -290,7 +308,7 @@ async def inference(
             output_response = {"results": output}
 
     images = []
-    extensions = [".jpg", ".png", ".jpeg"]
+    extensions = [".jpg", ".png", ".jpeg",".JPG"]
     for ext in extensions:
         img_paths = glob.glob(Path(f"{path_}/*{ext}").as_posix())
         images += [(os.sep).join(p_.split("/")[3:]) for p_ in img_paths]

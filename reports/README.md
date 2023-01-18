@@ -129,7 +129,7 @@ s201715, s194253, s184984
 >
 > Answer:
 
-We used the Pytorch Image Models framework (```timm```), where we used a pre-trained ResNet-50 model. Together with the ResNet-50 ```timm``` model we used the Pytorch-Lightning framework, where we used the Lightningodule to initilize and define the model steps, as well as the ```Trainer``` to take care of the training loop. Further, Weights & Biases was used when training the model, where we configured sweeps using bayesian optimization to find the hyperparameters leading to the best accuracy. 
+We used the Pytorch Image Models framework (```timm```), where we used a pre-trained ResNet-50 model. Together with the ResNet-50 ```timm``` model we used the Pytorch-Lightning framework, where we used the Lightningodule to initilize and define the model steps, as well as the ```Trainer``` to take care of the training loop. Further, Weights & Biases was used when training the model, where we configured sweeps using bayesian optimization to find the hyperparameters leading to the best accuracy.
 
 ## Coding environment
 
@@ -163,7 +163,8 @@ We used the Pytorch Image Models framework (```timm```), where we used a pre-tra
 > *experiments.*
 > Answer:
 
---- question 5 fill here ---
+We used the cookiecutter format for initializing the project's file structure. However, after initializing with cookiecutter we have
+modified the code structure a bit to fit our needs. First of all, we removed the `external` and `interim` folders within the `data` folder as the raw data as well as a processed version is sufficient for us. As we are working from a CLI, we removed the `notebooks` folder as well. The folders `references`, `docs`, `src.features` and `src.visualization` was deemed irrelevant - the latter two have implicitly been implemented in other scripts. We additionally created a `tests`-folder for running pytests as well as a `deployment` folder containing the FastAPI application and the associated Dockerfile for building the deployment-image. Additionally files determingin the pre-commit-configuration, the GCP Trigger (cloudbuild.yaml) as well as modified configurations for flake8, etc. were included in the root of the repository. Furthermore, scripts for creating a PyTorch dataloader as well as the PyTorch-Lightning-based models were included in `src.models` and `src.data`, respectively. We also created the folder `src.configs` for managing configurations with Hydra.
 
 ### Question 6
 

@@ -290,7 +290,7 @@ async def inference(
             output_response = {"results": output}
 
     images = []
-    extensions = [".jpg", ".png", ".jpeg"]
+    extensions = [".jpg", ".png", ".jpeg", ".JPG"]
     for ext in extensions:
         img_paths = glob.glob(Path(f"{path_}/*{ext}").as_posix())
         images += [(os.sep).join(p_.split("/")[3:]) for p_ in img_paths]

@@ -20,6 +20,7 @@ from deployment.app.main import router
 
 ##############################
 from deployment.app.app_setup import create_app
+from tests import _Path_API
 
 app = create_app()
 client = TestClient(app)
@@ -39,11 +40,25 @@ def test_func2():
 # Function 3: '/load_model' Method: POST
 def test_func3():
     response = client.post("/load_model")
-    assert response.json()["model"]["loaded"] == True
+    assert response.status_code == 200
 
 
 # Function 4: '/predict' Method: POST
-# def test_func4():
-#    load_model = response = client.post("/load_model")  # start by loading model
-#    response = client.post("/predict")
-#    assert response.json()["output"]["results"]["A"]["0"]["pred"] == 15
+@pytest.mark.skipif(not os.path.exists(Path(_Path_API)), reason="Model files not found")
+def test_func4():
+    files = {"file": open("example_images/Apple_healthy.jpg", "rb")}
+    response = client.post("/predict", files=files)
+    assert response.json()["output"]["results"]["A"]["0"]["pred"] == 10
+
+
+@pytest.mark.skipif(not os.path.exists(Path(_Path_API)), reason="Model files not found")
+def test_func5():
+    files = [
+        ("files", open("example_images/Apple_healthy.jpg", "rb")),
+        ("files", open("example_images/Tomato_bacterial.jpg", "rb")),
+    ]
+    response = client.post("/predict_multiple", files=files)
+    response = response.json()
+    pred1 = response["output"]["results"]["Apple_healthy.jpg"]["0"]["pred"]
+    pred2 = response["output"]["results"]["Tomato_bacterial.jpg"]["0"]["pred"]
+    assert pred1 == 10 and pred2 == 10

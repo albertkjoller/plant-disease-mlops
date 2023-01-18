@@ -63,6 +63,9 @@ target/
 *.db
 *.rdb
 
+# csv
+*.csv
+
 # Pycharm
 .idea
 
@@ -91,6 +94,7 @@ target/
 temp/
 images/
 labels/
+monitoring.html
 
 # Logs
 lightning_logs/

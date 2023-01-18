@@ -9,5 +9,8 @@ dvc
 dvc[gs]
 timm
 pytorch-lightning
-#ndjson
-#google.cloud
+Pillow
+transformers
+numpy
+pandas
+evidently

@@ -50,53 +50,53 @@ end of the project.
 
 ### Week 1
 
-* [ ] Create a git repository
-* [ ] Make sure that all team members have write access to the github repository
-* [ ] Create a dedicated environment for you project to keep track of your packages
-* [ ] Create the initial file structure using cookiecutter
-* [ ] Fill out the `make_dataset.py` file such that it downloads whatever data you need and
-* [ ] Add a model file and a training script and get that running
-* [ ] Remember to fill out the `requirements.txt` file with whatever dependencies that you are using
-* [ ] Remember to comply with good coding practices (`pep8`) while doing the project
-* [ ] Do a bit of code typing and remember to document essential parts of your code
-* [ ] Setup version control for your data or part of your data
-* [ ] Construct one or multiple docker files for your code
-* [ ] Build the docker files locally and make sure they work as intended
-* [ ] Write one or multiple configurations files for your experiments
-* [ ] Used Hydra to load the configurations and manage your hyperparameters
-* [ ] When you have something that works somewhat, remember at some point to to some profiling and see if
+* [x] Create a git repository
+* [x] Make sure that all team members have write access to the github repository
+* [x] Create a dedicated environment for you project to keep track of your packages
+* [x] Create the initial file structure using cookiecutter
+* [x] Fill out the `make_dataset.py` file such that it downloads whatever data you need and
+* [x] Add a model file and a training script and get that running
+* [x] Remember to fill out the `requirements.txt` file with whatever dependencies that you are using
+* [x] Remember to comply with good coding practices (`pep8`) while doing the project
+* [x] Do a bit of code typing and remember to document essential parts of your code
+* [x] Setup version control for your data or part of your data
+* [x] Construct one or multiple docker files for your code
+* [x] Build the docker files locally and make sure they work as intended
+* [x] Write one or multiple configurations files for your experiments
+* [x] Used Hydra to load the configurations and manage your hyperparameters
+* [x] When you have something that works somewhat, remember at some point to to some profiling and see if
       you can optimize your code
-* [ ] Use Weights & Biases to log training progress and other important metrics/artifacts in your code. Additionally,
+* [x] Use Weights & Biases to log training progress and other important metrics/artifacts in your code. Additionally,
       consider running a hyperparameter optimization sweep.
-* [ ] Use Pytorch-lightning (if applicable) to reduce the amount of boilerplate in your code
+* [x] Use Pytorch-lightning (if applicable) to reduce the amount of boilerplate in your code
 
 ### Week 2
 
-* [ ] Write unit tests related to the data part of your code
-* [ ] Write unit tests related to model construction and or model training
-* [ ] Calculate the coverage.
-* [ ] Get some continuous integration running on the github repository
-* [ ] Create a data storage in GCP Bucket for you data and preferable link this with your data version control setup
-* [ ] Create a trigger workflow for automatically building your docker images
-* [ ] Get your model training in GCP using either the Engine or Vertex AI
-* [ ] Create a FastAPI application that can do inference using your model
+* [x] Write unit tests related to the data part of your code
+* [x] Write unit tests related to model construction and or model training
+* [x] Calculate the coverage.
+* [x] Get some continuous integration running on the github repository
+* [x] Create a data storage in GCP Bucket for you data and preferable link this with your data version control setup
+* [x] Create a trigger workflow for automatically building your docker images
+* [x] Get your model training in GCP using either the Engine or Vertex AI
+* [x] Create a FastAPI application that can do inference using your model
 * [ ] If applicable, consider deploying the model locally using torchserve
-* [ ] Deploy your model in GCP using either Functions or Run as the backend
+* [x] Deploy your model in GCP using either Functions or Run as the backend
 
 ### Week 3
 
-* [ ] Check how robust your model is towards data drifting
-* [ ] Setup monitoring for the system telemetry of your deployed model
+* [x] Check how robust your model is towards data drifting
+* [x] Setup monitoring for the system telemetry of your deployed model
 * [ ] Setup monitoring for the performance of your deployed model
-* [ ] If applicable, play around with distributed data loading
+* [x] If applicable, play around with distributed data loading
 * [ ] If applicable, play around with distributed model training
-* [ ] Play around with quantization, compilation and pruning for you trained models to increase inference speed
+* [x] Play around with quantization, compilation and pruning for you trained models to increase inference speed
 
 ### Additional
 
-* [ ] Revisit your initial project description. Did the project turn out as you wanted?
-* [ ] Make sure all group members have a understanding about all parts of the project
-* [ ] Uploaded all your code to github
+* [x] Revisit your initial project description. Did the project turn out as you wanted?
+* [x] Make sure all group members have a understanding about all parts of the project
+* [x] Uploaded all your code to github
 
 ## Group information
 
@@ -129,7 +129,13 @@ s201715, s194253, s184984
 >
 > Answer:
 
---- question 3 fill here ---
+We used the Pytorch Image Models (Timm) framework throughout our project, in order to load a Pre-trained ResNet50 model. The model was loaded through the following command, ` self.model = timm.create_model( "resnet50", pretrained=True, num_classes=n_classes ) `.
+
+The model was incredibly simple to load, with the only required input on our part was the amount of classes in our plant-disease problem, 38. This made things easier for us, as we could then spend more time on implementing the MLOps tools, rather than developing and training a big model.
+
+Once the model had been loaded, we froze all the weights. Thus making sure not to alter the already useful layers of the ResNet, and instead making our training of the model focus only on the output layer. - We also made sure to add log-softmax, for numerical stability.
+
+The Timm-framework was a great help in the development of this project, although not much time was spent with it.
 
 ## Coding environment
 
@@ -148,7 +154,42 @@ s201715, s194253, s184984
 >
 > Answer:
 
---- question 4 fill here ---
+In this project, we've emphasized the importance of easy installment for team-members and other potential researchers that would want to use our developed project in the future. Therefore, we've spent time making a README.md that is easy to understand, and contains all the lines of code needed to start the project, as well as all other relevant lines of code for training, predicting, etc.
+
+The following is a snippet of our README.md, explaining the setup of our environment.
+---
+
+Clone the repository and create a virtual environment (with Python 3.10). A pre-defined environment running with CUDA 11.6 can be created like:
+
+### Precompiled environment
+```
+conda env create -f environment.yml
+```
+
+### Manual installation
+Otherwise, run the following:
+
+```
+conda create -n mlops_project python=3.10
+```
+
+Install the dependencies:
+```
+pip install -r requirements.txt
+```
+
+#### PyTorch - CPU
+If running on CPU install Pytorch with the following command:
+
+```
+pip3 install torch torchvision torchaudio
+```
+
+#### PyTorch - GPU (CUDA 11.6)
+If running on GPU with CUDA 11.6 install Pytorch with the following command:
+```
+pip3 install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cu116
+```
 
 ### Question 5
 
@@ -238,7 +279,12 @@ s201715, s194253, s184984
 >
 > Answer:
 
---- question 10 fill here ---
+We made use of DVC in order to push data to a Google Cloud storage bucket. Trying to access the data through dvc pull in various Docker images however, proved to be a difficult process. Instead, we ended up downloading the data to our Docker images through a gsutil-command, that would copy the data from the bucket into our Image.
+```
+gsutil cp -r gs://plant-disease-mlops-data-bucket .
+```
+This though, did not mean we did not use DVC, as it was a great tool for continuously pushing the newest data to the bucket, able to be accessed through gsutil.
+
 
 ### Question 11
 

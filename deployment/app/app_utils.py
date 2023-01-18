@@ -4,14 +4,16 @@ from src.models.model import ImageClassification
 import time
 import os
 import datetime
-from google.cloud import storage
-import ndjson
+
+# from google.cloud import storage
+# import ndjson
 
 
 class ModelWrapper:
     def __init__(self):
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         _ = self.load_model("deployment/app/static/assets/models/default.pth")
+        self.loaded = False
 
         # Create temporary data-folder
         os.makedirs("deployment/app/static/assets/models", exist_ok=True)

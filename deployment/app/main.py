@@ -262,9 +262,6 @@ async def inference(request: Request, files: Optional[List[UploadFile]] = None):
 
         files_list = [img.split(os.sep)[-1] for img in images]
 
-        # files_list = [x for x in os.listdir(path_) if x != '.DS_Store']
-        # images = [f"{path_[11:]}/{x}" for x in files_list]
-
     else:
         output_response = {"results": None}
 

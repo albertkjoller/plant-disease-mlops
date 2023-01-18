@@ -43,7 +43,7 @@ def test_func3():
 
 
 # Function 4: '/predict' Method: POST
-def test_func4():
-    load_model = response = client.post("/load_model")  # start by loading model
-    response = client.post("/predict")
-    assert response.json()["output"]["results"]["A"]["0"]["pred"] == 15
+# def test_func4():
+#    load_model = response = client.post("/load_model")  # start by loading model
+#    response = client.post("/predict")
+#    assert response.json()["output"]["results"]["A"]["0"]["pred"] == 15

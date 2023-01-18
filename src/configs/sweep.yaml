@@ -1,14 +1,19 @@
 program: src/models/train_model.py
-method: bayes
+method: grid
 metric:
   name: val_loss
   goal: minimize
-run_cap: 100
+run_cap: 1
 parameters:
   experiment.training.lr:
-    distribution: log_uniform
-    min: -11.512925465
-    max: -2.30258509299
+    distribution: constant
+    value: 0.0035900486014863666
+  experiment.training.batch_size:
+    distribution: constant
+    value: 100
+  experiment.training.epochs:
+    distribution: constant
+    value: 100
 command:
   - ${env}
   - python

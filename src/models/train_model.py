@@ -74,10 +74,13 @@ def train(config):
     # Define log-name
     log_name = f"{experiment.experiment_name}.lr={experiment.training.lr}.batch_size={experiment.training.batch_size}.seed={experiment.training.seed}"
 
-
     # Define model checkpoint
-    save_path = Path(to_absolute_path(paths.save_path)) / experiment.experiment_name
-    if not(os.path.exists(save_path) and os.path.isdir(save_path)):
+    save_path = (
+        Path(to_absolute_path(paths.save_path))
+        / experiment.experiment_name
+        / f"LR{experiment.training.lr}-BS{experiment.training.batch_size}"
+    )
+    if not (os.path.exists(save_path) and os.path.isdir(save_path)):
         os.makedirs(save_path)
 
     checkpoint_callback = ModelCheckpoint(

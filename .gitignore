@@ -94,6 +94,7 @@ target/
 temp/
 images/
 labels/
+monitoring.html
 
 # Logs
 lightning_logs/

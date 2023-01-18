@@ -80,6 +80,13 @@ dvc pull
 
 ---
 
+### Training locally
+
+In order to train a model locally, an experiment `.yaml-file` should be created/modified, and set as the experiment in the `config.default`-file.
+Now, the model can be trained with the following command
+
+```python src/model/train_model.py```
+
 ### Running a hyperparameter-sweep
 A hyper-parameter sweep can be started through the following command, once the sweep has been defined in `sweep.yaml`:
 ```
@@ -102,6 +109,11 @@ docker run --gpus all -it --rm gcr.io/plant-disease-mlops/docker_img
 ```
 Now, the training can be started in accordance with `Running a hyperparameter-sweep`.
 
+### Gcloud model transfer
+
+```
+/root/google-cloud-sdk/bin/gcloud storage cp models/exp1/LR0.0035900486014863666-BS100/-epoch=77-val_acc=0.92.ckpt gs://plant-disease-models
+```
 ## Project Organization
 ------------
 

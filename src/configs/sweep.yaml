@@ -3,10 +3,12 @@ method: bayes
 metric:
   name: val_loss
   goal: minimize
+run_cap: 100
 parameters:
   experiment.training.lr:
-    min: 0.0001
-    max: 0.1
+    distribution: log_uniform
+    min: -11.512925465
+    max: -2.30258509299
 command:
   - ${env}
   - python

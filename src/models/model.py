@@ -3,7 +3,7 @@ import torch
 from pytorch_lightning import LightningModule
 import torch.nn.functional as F
 
-from app.app_utils import get_labels  # get labels dictionary here
+from src.models.model_utils import get_labels  # get labels dictionary here
 
 
 class ImageClassification(LightningModule):
@@ -114,7 +114,7 @@ class ImageClassification(LightningModule):
                 y[i]: {
                     i: {
                         "pred": pred_[i].item(),
-                        "prob": prob_[i].item(),
+                        "prob": round(prob_[i].item(), 3),
                         "label": self.idx2class[pred_[i].item()],
                     }
                     for i in range(K)

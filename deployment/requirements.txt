@@ -1,0 +1,16 @@
+requests
+httpx
+aiosqlite
+fastapi
+fastapi-scheduler
+uvicorn[standard]
+python-multipart
+dvc
+dvc[gs]
+timm
+pytorch-lightning
+Pillow
+transformers
+numpy
+pandas
+evidently

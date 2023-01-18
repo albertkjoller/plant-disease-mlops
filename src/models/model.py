@@ -3,8 +3,6 @@ import torch
 from pytorch_lightning import LightningModule
 import torch.nn.functional as F
 
-from src.models.model_utils import get_labels  # get labels dictionary here
-
 
 class ImageClassification(LightningModule):
     """
@@ -101,6 +99,8 @@ class ImageClassification(LightningModule):
             return pred_class
 
         else:  # consistently set to -1 in deployment mode
+            from src.models.model_utils import get_labels  # get labels dictionary here
+
             # Get label dictionary
             self.idx2class = get_labels()
             self.class2idx = {v: int(k) for (k, v) in self.idx2class.items()}

@@ -72,25 +72,21 @@ def train(config):
     model.to(device)
 
     # Define log-name
-    log_name = f"{experiment.experiment_name}.lr={experiment.training.lr}.batch_size={experiment.training.batch_size}.seed={experiment.training.seed}"
+    log_name = f"{experiment.experiment_name}.time={int(round(time.time()))}.lr={experiment.training.lr}.batch_size={experiment.training.batch_size}.seed={experiment.training.seed}"
 
     # Define model checkpoint
-    save_path = (
-        Path(to_absolute_path(paths.save_path))
-        / experiment.experiment_name
-        / f"LR{experiment.training.lr}-BS{experiment.training.batch_size}"
-    )
+    save_path = Path(to_absolute_path(paths.save_path)) / experiment.experiment_name
     if not (os.path.exists(save_path) and os.path.isdir(save_path)):
         os.makedirs(save_path)
 
     checkpoint_callback = ModelCheckpoint(
         save_top_k=1,
         monitor="val_acc",
-        mode="min",
+        mode="max",
         dirpath=save_path,
-        filename="{epoch:02d}-{val_acc:.2f}-"
-        + f"""{(datetime.datetime.now()).strftime("%d_%m_%Y %H:%M:%S")}""",
+        filename="{epoch:02d}-{val_acc:.2f}-" + f"{log_name}",
     )
+
     # Train model
     trainer = Trainer(
         max_epochs=experiment.training.epochs,

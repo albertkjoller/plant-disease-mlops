@@ -15,11 +15,12 @@ import pandas as pd
 model = CLIPModel.from_pretrained("openai/clip-vit-base-patch32")
 processor = CLIPProcessor.from_pretrained("openai/clip-vit-base-patch32")
 
-
 class ModelWrapper:
     def __init__(self):
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-        _ = self.load_model("deployment/app/static/assets/models/default.pth")
+        _ = self.load_model(
+            "deployment/app/static/assets/models/default.ckpt", default=True
+        )
         self.loaded = True
 
         self.file_upload_result = {
@@ -33,40 +34,22 @@ class ModelWrapper:
         os.makedirs("deployment/app/static/assets/models", exist_ok=True)
         os.makedirs("deployment/app/static/assets/images", exist_ok=True)
 
-    def load_model(self, torch_filepath):
+    def load_model(self, torch_filepath, default: bool = False):
         try:
-            if torch_filepath.split(".")[-1] == "pth":
-                checkpoint = torch.load(torch_filepath)
+            self.model = ImageClassification.load_from_checkpoint(torch_filepath)
+            self.model.to(self.device)
+            self.model.eval()
 
-                # Change load status
-                self.loaded = True
-                self.filepath = torch_filepath
-
-                # Setup model
-                self.model = ImageClassification(
-                    lr=checkpoint["training_parameters"]["lr"], n_classes=38
-                )
-                self.model.load_state_dict(checkpoint["state_dict"])
-                self.model.to(self.device)
-                self.model.eval()
-
-                # Return save-time
-                self.load_time = datetime.datetime.fromtimestamp(int(time.time()))
-                self.save_time = datetime.datetime.fromtimestamp(
-                    int(checkpoint["save_time"])
-                )
-
-            elif torch_filepath.split(".")[-1] == "ckpt":
-                self.model = ImageClassification()
-                self.model = self.model.load_from_checkpoint(torch_filepath)
-                self.model.to(self.device)
-                self.model.eval()
-                # Change load status
-                self.loaded = True
-                self.filepath = torch_filepath
-                self.load_time = datetime.datetime.fromtimestamp(int(time.time()))
-                self.save_time = (torch_filepath.split("-")[-1]).split(".")[0]
-
+            # Change load status
+            self.loaded = True
+            self.filepath = torch_filepath
+            self.load_time = datetime.datetime.fromtimestamp(int(time.time()))
+            self.save_time = (
+                datetime.datetime.fromtimestamp(
+                    int(torch_filepath.split("-")[2].split(".")[1].split("=")[1])
+                ) if not default else None
+            )
+                
             # Save response
             self.model_response = {
                 "loaded": self.loaded,

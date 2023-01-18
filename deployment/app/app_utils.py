@@ -15,7 +15,6 @@ import pandas as pd
 model = CLIPModel.from_pretrained("openai/clip-vit-base-patch32")
 processor = CLIPProcessor.from_pretrained("openai/clip-vit-base-patch32")
 
-
 class ModelWrapper:
     def __init__(self):
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -37,8 +36,7 @@ class ModelWrapper:
 
     def load_model(self, torch_filepath, default: bool = False):
         try:
-            self.model = ImageClassification()
-            self.model = self.model.load_from_checkpoint(torch_filepath)
+            self.model = ImageClassification.load_from_checkpoint(torch_filepath)
             self.model.to(self.device)
             self.model.eval()
 
@@ -49,11 +47,9 @@ class ModelWrapper:
             self.save_time = (
                 datetime.datetime.fromtimestamp(
                     int(torch_filepath.split("-")[2].split(".")[1].split("=")[1])
-                )
-                if not default
-                else None
+                ) if not default else None
             )
-
+                
             # Save response
             self.model_response = {
                 "loaded": self.loaded,

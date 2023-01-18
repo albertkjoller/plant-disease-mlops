@@ -67,7 +67,7 @@ def train(config):
 
     # Initialize model
     model = ImageClassification(
-        lr=experiment.training.lr, n_classes=trainData.n_classes
+        lr=experiment.training.lr,batch_size=experiment.training.batch_size, n_classes=trainData.n_classes
     )
     model.to(device)
 

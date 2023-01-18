@@ -1,11 +1,11 @@
 experiment_name: exp1
 
 training:
-    lr: 0.001
-    batch_size: 64
-    epochs: 30
+    lr: 0.00359
+    batch_size: 100
+    epochs: 100
     seed: 42
 
 data:
     process_type: 'color'
-    num_workers: 4
+    num_workers: 0

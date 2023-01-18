@@ -83,7 +83,7 @@ def train(config):
     checkpoint_callback = ModelCheckpoint(
     save_top_k=1,
     monitor="val_acc",
-    mode="min",
+    mode="max",
     dirpath=save_path,
     filename="{epoch:02d}-{val_acc:.2f}-"+f"""{(datetime.datetime.now()).strftime("%d_%m_%Y %H:%M:%S")}""")
     # Train model

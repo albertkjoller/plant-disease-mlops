@@ -108,3 +108,6 @@ dtu_mlops/
 *.pth
 *.pt
 *.ckpt
+
+# html
+*.html

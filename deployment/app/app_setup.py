@@ -45,11 +45,11 @@ def create_app():
         print("cleanup job")
         if os.path.exists("deployment/app/static/assets/images"):
             for content in os.listdir("deployment/app/static/assets/images"):
-                if content not in ["test", ".DS_Store"]:
+                if content not in [".DS_Store"]:
                     shutil.rmtree(f"deployment/app/static/assets/images/{content}")
         if os.path.exists("deployment/app/static/assets/models"):
             for content in os.listdir("deployment/app/static/assets/models"):
-                if content not in ["test", ".DS_Store"]:
+                if content not in ["default.pth", "default.ckpt", ".DS_Store"]:
                     shutil.rmtree(f"deployment/app/static/assets/models/{content}")
 
     @app.on_event("startup")
@@ -62,6 +62,7 @@ def create_app():
 
 
 app = create_app()
+
 if __name__ == "__main__":
     # Run application
     uvicorn.run(app, host="127.0.0.1", port=8000)

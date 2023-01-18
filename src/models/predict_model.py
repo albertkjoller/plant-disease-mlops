@@ -23,7 +23,6 @@ sys.path.append(a)
 # from deployment.app.app_utils import get_base_model
 import os
 
-
 import logging
 
 log = logging.getLogger(__name__)
@@ -70,11 +69,7 @@ def predict(config) -> None:
     )
 
     # Initialize model
-    model = ImageClassification()
-
-    # define model path here
-    # get_model_checkpoint = get_base_model(name=args.model_checkpoint,trainer=True)
-    model = model.load_from_checkpoint(args.model_checkpoint)
+    model = ImageClassification.load_from_checkpoint(args.model_checkpoint)
     model = model.to(device)
 
     predictions = trainer.predict(model, test_loader)

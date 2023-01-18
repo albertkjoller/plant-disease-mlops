@@ -1,25 +1,32 @@
 import torch
 import datetime
+from http import HTTPStatus
+
 from src.models.model import ImageClassification
 import time
 import os
 import datetime
-from google.cloud import storage
-import ndjson
 from csv import writer
 from PIL import Image, ImageEnhance
 from transformers import CLIPProcessor, CLIPModel
 import numpy as np
 import pandas as pd
+
 model = CLIPModel.from_pretrained("openai/clip-vit-base-patch32")
 processor = CLIPProcessor.from_pretrained("openai/clip-vit-base-patch32")
-
-
 
 class ModelWrapper:
     def __init__(self):
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         _ = self.load_model("deployment/app/static/assets/models/default.pth")
+        self.loaded = True
+
+        self.file_upload_result = {
+            "upload-successful": True,
+            "model": self.model_response,
+            "message": HTTPStatus.OK.phrase,
+            "status-code": HTTPStatus.OK,
+        }
 
         # Create temporary data-folder
         os.makedirs("deployment/app/static/assets/models", exist_ok=True)
@@ -49,8 +56,7 @@ class ModelWrapper:
                 )
 
             elif torch_filepath.split(".")[-1] == "ckpt":
-                self.model = ImageClassification()
-                self.model = self.model.load_from_checkpoint(torch_filepath)
+                self.model = ImageClassification.load_from_checkpoint(torch_filepath)
                 self.model.to(self.device)
                 self.model.eval()
                 # Change load status
@@ -70,28 +76,27 @@ class ModelWrapper:
         except FileNotFoundError:
             self.model_response = {"loaded": False}
 
-def update_log(timestamp : str, features):
-    mu= np.mean(features)
+
+def update_log(timestamp: str, features, modelClass):
+    mu = np.mean(features)
     sigma = np.std(features)
     Q0 = np.min(features)
-    Q4=np.max(features)
-    Q1=np.quantile(features,q=0.25)
-    Q3=np.quantile(features,q=0.75)
-    row = [timestamp,mu,sigma,Q0,Q4,Q1,Q3]
-    with open('deployment/app/current_data.csv', 'a') as file:
+    Q4 = np.max(features)
+    Q1 = np.quantile(features, q=0.25)
+    Q3 = np.quantile(features, q=0.75)
+    model_path = modelClass.model_response["filepath"]
+    row = [timestamp, mu, sigma, Q0, Q4, Q1, Q3, model_path]
+    with open("deployment/app/monitoring/current_data.csv", "a") as file:
         writer_obj = writer(file)
         writer_obj.writerow(row)
 
+
 def prepare_feature(image):
     inputs = processor(images=image, return_tensors="pt", padding=True)
-    img_features = model.get_image_features(inputs['pixel_values'])
-    features_np=img_features.detach().numpy()[0]
+    img_features = model.get_image_features(inputs["pixel_values"])
+    features_np = img_features.detach().numpy()[0]
     return features_np
 
+
 def get_train_distribution():
-    if not os.path.exists('deployment/app/reference_data.csv'):
-        client = storage.Client("plant-disease-mlops")
-        bucket = client.get_bucket("plant-disease-mlops-train-distribution")
-        blob = bucket.blob("reference_data.csv")
-        blob.download_to_filename('deployment/app/reference_data.csv')
-    return pd.read_csv('deployment/app/reference_data.csv')
+    return pd.read_csv("deployment/app/monitoring/reference_data.csv")

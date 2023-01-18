@@ -20,9 +20,10 @@ class ImageClassification(LightningModule):
             Number of classes to be outputted
     """
 
-    def __init__(self, lr: float = 1e-3, n_classes: int = 38):
+    def __init__(self, lr: float = 1e-3, batch_size: int = 64, n_classes: int = 38):
         # Initialize as Lightning Module
         super().__init__()
+        self.save_hyperparameters()
 
         # Load pre-train ResNet network
         self.model = timm.create_model(
@@ -41,6 +42,8 @@ class ImageClassification(LightningModule):
 
         # Setup learning rate
         self.lr = lr
+        self.batch_size = batch_size
+        self.n_classes = n_classes
 
     def configure_optimizers(self):
         return torch.optim.Adam(self.model.parameters(), self.lr)

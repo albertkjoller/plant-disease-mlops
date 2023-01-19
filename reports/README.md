@@ -245,7 +245,7 @@ modified the code structure a bit to fit our needs. First of all, we removed the
 >
 > Answer:
 
---- question 7 fill here ---
+In total we have implemented 9 tests. 3 tests concern the data, where it is tested if correct dimensions and size of data are encountered. 5 tests are used for testing the behaviour of API endpoints, for instance if the model upload or prediction of images endpoint works as expected. Finally, 1 test for testing the model is implemented, where it is tested that the model output is as expected.  
 
 ### Question 8
 
@@ -260,7 +260,6 @@ modified the code structure a bit to fit our needs. First of all, we removed the
 >
 > Answer:
 
---- question 8 fill here ---
 
 ### Question 9
 
@@ -275,7 +274,7 @@ modified the code structure a bit to fit our needs. First of all, we removed the
 >
 > Answer:
 
---- question 9 fill here ---
+Both branches and pull requests (PRs) were used throughout the project. Each time a new code section/feature/improvement a new branch was created, where the work then was developed. When the development had been done, a pull request was made, where at least one other group member had to review the changes. Also an internal rule of all unit test needed to pass was made before a merge into main could take place. Most of the times only a single team member worked on a given branch. However, occasionally two group members were working on different tasks related to one branch, as such a sub-branch was made where one team member worked on the assigned task and another on the branch. When the task on the sub-branch had been developed a merge into the branch was made, and when all the tasks related to this branch had been devloped, and it was ensured that this branch was working, a merge into the main branch was made. As such merge into the main branch only occurred when the entire task was done and not just sub-tasks. Overall the usage of branches and pull requests was a great help to ensure version control and it helped us to manage and maintain code quality. 
 
 ### Question 10
 
@@ -409,7 +408,15 @@ This though, did not mean we did not use DVC, as it was a great tool for continu
 >
 > Answer:
 
---- question 17 fill here ---
+We used the following GCP services:
+1. Engine 
+2. Bucket
+3. Cloud Run
+The engine is used for running code on google servers. We used the engine for running model experiments. This was especially useful when doing different sweeps via Weights & Biases using bayesian optimization in order to find the best hyperparameters. This process would not have been posible timewise using a CPU. However, using the google engine with a GPU configuration it speeded up the process a lot. 
+
+We uses the bucket for storing data. We both store the plant disease dataset in the bucket and files used for the fastapi application. This ensures easy access to the data.
+
+Finally, we use the cloud run service to serve and run our fastapi application.
 
 ### Question 18
 
@@ -424,7 +431,6 @@ This though, did not mean we did not use DVC, as it was a great tool for continu
 >
 > Answer:
 
---- question 18 fill here ---
 
 ### Question 19
 
@@ -467,7 +473,14 @@ This though, did not mean we did not use DVC, as it was a great tool for continu
 >
 > Answer:
 
---- question 22 fill here ---
+For deployment we utilized the fastapi framework in order to serve our plant disease model. The model was first deployed locally by first a .py file and then the api was wrapped onto docker container and was ran locally there. When it was ensured these steps worked, the docker container was pushed to gcp and finally deployed via cloud run. Our deployed model comes with both a backend and frontend user interface with the same functionalties in both. To use the api the following command can for instance be called.
+
+* ```curl -X 'POST' \
+  'https://plant-disease-fastapi-2c2zw42era-ew.a.run.app/predict?h=56&w=56' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: multipart/form-data' \
+  -F 'file=@image.JPG;type=image/jpeg
+  ```
 
 ### Question 23
 
@@ -482,7 +495,8 @@ This though, did not mean we did not use DVC, as it was a great tool for continu
 >
 > Answer:
 
---- question 23 fill here ---
+We managed to implement some monitoring of our deployed model. For instance, we continuously monitor the uploaded data. Each time a new data point is uploaded for prediction some features based on the image are created which are stored in a log file. This log file can be compared against the data distribution on which the model was trained upon via Evidently AI using the api endpoint `monitoring`. Thus, we can continuously track if data drifting is taken place. This information is valuable, as when data drifting occurs the model accuracy might drop, as such a new model including the drifted data can be trained which hopefully should increase the accuracy once again. However, as such re-training loop has not been implemented. We only monitor if data drifting seems to be taken place or not.
+
 
 ### Question 24
 

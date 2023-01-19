@@ -1,6 +1,9 @@
 import json
 
 def get_labels():
+    """
+    Get labels associated with each plant disease class
+    """
     with open("./deployment/app/static/assets/labels/labels.json") as f:
         labels = json.load(f)
     labels = {int(k): v for (k, v) in labels.items()}

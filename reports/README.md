@@ -365,8 +365,17 @@ Meanwhile, a WandB sweep.yaml file was created, that could easliy overwrite the 
 >
 > Answer:
 
---- question 13 fill here ---
-ANSWER ME!
+WandB hyperparameter sweeps was our primary tool of training our models, which is why WandB ended up being our primary place of saving our run-data. We had some problems making Hydra and WandB work together, as Hydra created an outputs folder containing the config file that had been run, as well as the outputs for that particular run - which would've been very helpful for reproducibility. However, upon the creation of the outputs-folder, the CWD was changed, making wandb unable to continue the run.
+
+Instead, we opted for making the names of our runs within WandB contain all of the important info from our config-file, making us able to look at all of our runs on WandB, and at a glance find the best model so far.
+
+This means that the run of our best model was named:
+
+```exp1.lr=0.0035900486014863666.batch_size=100.seed=42-1674039923```
+
+Which is why reproducing this specific run could be done with the following command:
+
+```python src/models/train_model.py experiment.training.lr=0.0035900486014863666 experiment.training.batch_size=100 experiment.training.seed=42```
 
 ### Question 14
 

@@ -226,7 +226,7 @@ modified the code structure a bit to fit our needs. First of all, we removed the
 >
 > Answer:
 
-We created a pre-commit configuration file for ensuring a standardized code quality and format on the repository. This was primarily included to avoid pushing large files (for not "exploding" repository size), ensuring whitespace as well as correctly formatting yaml-files. Furthermore, `black` was run on all committed scripts to ensure that the PEP8-format was followed - however, using a slightly modified `flake8`-configuration by setting the max-line-width to 100. We considered using `isort`, however, ended up not using it. These concepts matter in terms of readability of code, such that other teammates as well as other researchers who might find this work beneficial are able to read and understand the code without having to worry about the code and repository structure.
+--- question 6 fill here ---
 
 ## Version control
 
@@ -290,12 +290,13 @@ Both branches and pull requests (PRs) were used throughout the project. Each tim
 >
 > Answer:
 
-We made use of DVC in order to push data to a Google Cloud storage bucket. Trying to access the data through dvc pull in various Docker images however, proved to be a difficult process. Instead, we ended up downloading the data to our Docker images through a gsutil-command, that would copy the data from the bucket into our Image.
+We made use of DVC in order to push data to a Google Cloud storage bucket. However, once we tried to pull our data to our Docker image using `dvc pull` in the Dockerfile, we seemed to encounter multiple problems - as we didn't want to clone our entire Git repository into our image in order to save space.
+
+Instead, we ended up downloading the data to our Docker images through a gsutil-command, that would copy the data from the bucket into our Docker Image.
 ```
 gsutil cp -r gs://plant-disease-mlops-data-bucket .
 ```
-This though, did not mean we did not use DVC, as it was a great tool for continuously pushing the newest data to the bucket, able to be accessed through gsutil.
-
+This did not mean we did not use DVC, as it still helped greatly as a help to continuously push the newest data to the bucket, able to be accessed through gsutil.
 
 ### Question 11
 
@@ -311,7 +312,19 @@ This though, did not mean we did not use DVC, as it was a great tool for continu
 >
 > Answer:
 
---- question 11 fill here ---
+Our Continuous Integration pipeline made use of unit-testing, github actions, pre-commits as well as continous Docker containers.
+
+While we didn't go into great dephts regarding unit-testing, we still wanted to make sure that we understood how to create them and make sure they were running. We created tests regarding the data-part of our pipeline, the model-part as well as the API-part.
+
+- The unit-tests regarding our data made sure that the size and shape of our train-, test- and validation-sets were as expected, as well as making sure that all three sets contained all 38 labels.
+- The model-tests made sure that the output of our model, based on a dummy-input, was of correct shape, namely 38 classes.
+- Finally, the API-tests made sure our webpage gave correct responses based on various requests to our website.
+
+Our Github actions workflow included a coverage test, as well as tests on 3 OSes (Windows, Ubuntu, MacOS) as seen in the following [https://github.com/albertkjoller/plant-disease-mlops/tree/main/.github/workflows](Workflow-link). Each OS-test ran on both Python 3.9 and 3.10.
+
+Meanwhile, we created pre-commits that would check (and fix) various parts of our pushed code (as already answered in question 6)
+
+Finally, the Trigger-tab on Google Cloud allowed continuous integration in the form of automatic Docker images, that would be pushed to the Google Cloud container registry once built. The trigger would start whenever a push was made to our main branch, a protected branch that required approvals from other team-members.
 
 ## Running code and tracking experiments
 
@@ -330,7 +343,15 @@ This though, did not mean we did not use DVC, as it was a great tool for continu
 >
 > Answer:
 
---- question 12 fill here ---
+We made use of Hydra when configuring our experiments, that way we could easily create configuration files as well as easily overwrite them when running in the terminal.
+
+Running an experiment would be done through the following command from the root of the project directory:
+
+```python src/models/train_model.py experiment.training.lr=0.01 experiment.training.batch_size=32```
+
+Meanwhile, a WandB sweep.yaml file was created, that could easliy overwrite the Hydra config through the following command:
+
+```wandb sweep --project sweeps_demo src/configs/sweep.yaml```
 
 ### Question 13
 
@@ -346,6 +367,7 @@ This though, did not mean we did not use DVC, as it was a great tool for continu
 > Answer:
 
 --- question 13 fill here ---
+ANSWER ME!
 
 ### Question 14
 
@@ -363,6 +385,8 @@ This though, did not mean we did not use DVC, as it was a great tool for continu
 > Answer:
 
 --- question 14 fill here ---
+
+ANSWER ME!!
 
 ### Question 15
 

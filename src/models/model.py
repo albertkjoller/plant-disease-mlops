@@ -14,6 +14,8 @@ class ImageClassification(LightningModule):
     ----------
         lr: float
             Learning rate
+        batch_size: int
+            batch size used
         n_classes: int
             Number of classes to be outputted
     """

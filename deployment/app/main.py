@@ -42,6 +42,7 @@ templates = Jinja2Templates(directory="./deployment/app/templates")
 hash_ = secrets.token_hex(8)
 modelClass = ModelWrapper()
 
+# initialize the log file for the prediction data
 if not os.path.exists("deployment/app/monitoring/current_data.csv"):
     with open("deployment/app/monitoring/current_data.csv", "w") as file:
         header = ["timestamp", "mean", "std", "min", "max", "Q1", "Q3", "model_path"]

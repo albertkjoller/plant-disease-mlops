@@ -80,7 +80,7 @@ async def upload_model(file: Optional[UploadFile] = None):
 @router.post("/load_model")
 def load_model(model_name: Optional[str] = None):
     # Load from temporary storage
-    model_name = "default.pth" if model_name == None else f"{hash_}/{model_name}"
+    model_name = "default.ckpt" if model_name == None else f"{hash_}/{model_name}"
     modelClass.load_model(
         f"deployment/app/static/assets/models/{model_name}"
     )  # hash+model_name
@@ -111,7 +111,7 @@ async def predict(
         f.close()
 
     # Load image
-    transform=transforms.Compose(
+    transform = transforms.Compose(
         [
             transforms.Resize(h),
             transforms.ToTensor(),
@@ -165,7 +165,7 @@ async def predict_multiple(
             f.write(content)
             f.close()
 
-        transform=transforms.Compose(
+        transform = transforms.Compose(
             [
                 transforms.Resize(h),
                 transforms.ToTensor(),
@@ -282,7 +282,7 @@ async def inference(
             f.write(content)
             f.close()
 
-        transform=transforms.Compose(
+        transform = transforms.Compose(
             [
                 transforms.Resize(h),
                 transforms.ToTensor(),
@@ -309,7 +309,7 @@ async def inference(
             output_response = {"results": output}
 
     images = []
-    extensions = [".jpg", ".png", ".jpeg",".JPG"]
+    extensions = [".jpg", ".png", ".jpeg", ".JPG"]
     for ext in extensions:
         img_paths = glob.glob(Path(f"{path_}/*{ext}").as_posix())
         images += [(os.sep).join(p_.split("/")[3:]) for p_ in img_paths]

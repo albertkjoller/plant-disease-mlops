@@ -16,7 +16,6 @@ from src.data.dataloader import PlantVillage
 from src.models.model import ImageClassification
 
 import logging
-import datetime
 
 log = logging.getLogger(__name__)
 
@@ -75,7 +74,9 @@ def train(config):
 
     # Initialize model
     model = ImageClassification(
-        lr=experiment.training.lr,batch_size=experiment.training.batch_size, n_classes=trainData.n_classes
+        lr=experiment.training.lr,
+        batch_size=experiment.training.batch_size,
+        n_classes=trainData.n_classes,
     )
     model.to(device)
 
@@ -89,14 +90,14 @@ def train(config):
 
     # Save the checkpoint for the epoch leading to the best validation accuracy
     checkpoint_callback = ModelCheckpoint(
-        save_top_k=1,
+        save_top_k=3,
         monitor="val_acc",
         mode="max",
         dirpath=save_path,
         filename="{epoch:02d}-{val_acc:.2f}-" + f"{log_name}",
     )
 
-    # Define trainer 
+    # Define trainer
     trainer = Trainer(
         max_epochs=experiment.training.epochs,
         accelerator=accelerator_type,

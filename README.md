@@ -121,46 +121,81 @@ Now, the training can be started in accordance with `Running a hyperparameter-sw
     ├── Makefile           <- Makefile with commands like `make data` or `make train`
     ├── README.md          <- The top-level README for developers using this project.
     ├── data
-    │   ├── external       <- Data from third party sources.
-    │   ├── interim        <- Intermediate data that has been transformed.
     │   ├── processed      <- The final, canonical data sets for modeling.
     │   └── raw            <- The original, immutable data dump.
     │
-    ├── docs               <- A default Sphinx project; see sphinx-doc.org for details
-    │
     ├── models             <- Trained and serialized models, model predictions, or model summaries
     │
-    ├── notebooks          <- Jupyter notebooks. Naming convention is a number (for ordering),
-    │                         the creator's initials, and a short `-` delimited description, e.g.
-    │                         `1.0-jqp-initial-data-exploration`.
-    │
-    ├── references         <- Data dictionaries, manuals, and all other explanatory materials.
-    │
     ├── reports            <- Generated analysis as HTML, PDF, LaTeX, etc.
+    │   ├── README.md      <- Answers for the report-template to be handed in.
+    │   ├── report.py
     │   └── figures        <- Generated graphics and figures to be used in reporting
-    │
-    ├── requirements.txt   <- The requirements file for reproducing the analysis environment, e.g.
-    │                         generated with `pip freeze > requirements.txt`
     │
     ├── setup.py           <- makes project pip installable (pip install -e .) so src can be imported
     ├── src                <- Source code for use in this project.
     │   ├── __init__.py    <- Makes src a Python module
     │   │
+    │   ├── configs        <- Yaml-files for managing experimental configurations using Hydra.
+    │   |   ├── experiment
+    │   |   |   ├── test.yaml
+    │   |   |   ├── test_new_seed.yaml
+    |   |   │   └── test_reproducible.yaml
+    │   |   ├── defaults.yaml
+    │   │   └── sweep.yaml
     │   ├── data           <- Scripts to download or generate data
+    │   |   ├── __init__.py
+    │   |   ├── dataloader.py
     │   │   └── make_dataset.py
     │   │
-    │   ├── features       <- Scripts to turn raw data into features for modeling
-    │   │   └── build_features.py
-    │   │
-    │   ├── models         <- Scripts to train models and then use trained models to make
-    │   │   │                 predictions
-    │   │   ├── predict_model.py
-    │   │   └── train_model.py
-    │   │
-    │   └── visualization  <- Scripts to create exploratory and results oriented visualizations
-    │       └── visualize.py
+    │   └── models         <- Scripts to train models and then use trained models to make
+    │       │                 predictions
+    │       ├── __init__.py
+    │       ├── model_utils.py
+    │       ├── model.py
+    │       ├── predict_model.py
+    │       └── train_model.py
     │
+    ├── tests              <- Pytests
+    │   ├── __init__.py    <- Makes tests a Python module
+    │   ├── test_api.py
+    │   ├── test_data.py
+    │   └── test_model.py
+    │
+    ├── deployment         <- Contains the FastAPI application setup
+    │   ├── app
+    │   │   ├── monitoring
+    │   │   ├── static
+    │   │   │── templates
+    │   │   │
+    │   │   ├── __init__.py
+    │   │   ├── app_setup.py
+    │   │   ├── app_utils.py
+    │   │   └── main.py
+    │   │
+    │   ├── Dockerfile
+    │   └── requirements.txt
+    │
+    ├── requirements.txt
+    ├── requirements_tests.txt
+    ├── .github
+    │    └── workflows
+    │         ├── coverage.yml
+    │         ├── macos.yml
+    │         ├── windows.yml
+    │         └── ubuntu.yml
+    ├── .dvc
+    ├── .dvcignore
+    ├── .flake8
+    ├── .pre-commit-config.yaml
+    ├── cloudbuild.yaml
+    ├── pyproject.toml
+    ├── Dockerfile         <- For creating the docker image for GCP (GPU)
+    ├── Dockerfile_cpu     <- For creating the docker image for GCP (CPU)
+    ├── trainer_gpu.dockerfile         <- For creating the docker image for local training (GPU)
+    ├── trainer.dockerfile             <- For creating the docker image for GCP (CPU)
+    ├── pyproject.toml
     └── tox.ini            <- tox file with settings for running tox; see tox.readthedocs.io
+
 
 
 --------
@@ -187,7 +222,7 @@ Now, the training can be started in accordance with `Running a hyperparameter-sw
 * [x] Build the docker files locally and make sure they work as intended
 * [x] Write one or multiple configurations files for your experiments
 * [x] Used Hydra to load the configurations and manage your hyperparameters
-* [x] When you have something that works somewhat, remember at some point to to some profiling and see if
+* [ ] When you have something that works somewhat, remember at some point to to some profiling and see if
       you can optimize your code
 * [x] Use Weights & Biases to log training progress and other important metrics/artifacts in your code. Additionally,
       consider running a hyperparameter optimization sweep.
@@ -201,22 +236,22 @@ Now, the training can be started in accordance with `Running a hyperparameter-sw
 * [x] Get some continuous integration running on the github repository
 * [x] Create a data storage in GCP Bucket for you data and preferable link this with your data version control setup
 * [x] Create a trigger workflow for automatically building your docker images
-* [ ] Get your model training in GCP using either the Engine or Vertex AI
+* [x] Get your model training in GCP using either the Engine or Vertex AI
 * [x] Create a FastAPI application that can do inference using your model
 * [ ] If applicable, consider deploying the model locally using torchserve
-* [ ] Deploy your model in GCP using either Functions or Run as the backend
+* [x] Deploy your model in GCP using either Functions or Run as the backend
 
 ### Week 3
 
 * [ ] Check how robust your model is towards data drifting
 * [ ] Setup monitoring for the system telemetry of your deployed model
 * [ ] Setup monitoring for the performance of your deployed model
-* [ ] If applicable, play around with distributed data loading
+* [x] If applicable, play around with distributed data loading
 * [ ] If applicable, play around with distributed model training
-* [ ] Play around with quantization, compilation and pruning for you trained models to increase inference speed
+* [x] Play around with quantization, compilation and pruning for you trained models to increase inference speed
 
 ### Additional
 
 * [ ] Revisit your initial project description. Did the project turn out as you wanted?
-* [ ] Make sure all group members have a understanding about all parts of the project
-* [ ] Uploaded all your code to github
+* [x] Make sure all group members have a understanding about all parts of the project
+* [x] Uploaded all your code to github

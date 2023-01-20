@@ -475,7 +475,7 @@ However, when we were testing the setup for the image containers a smaller GCP c
 >
 > Answer:
 
---- question 19 fill here ---
+[bucket](figures/our_bucket.png)
 
 ### Question 20
 

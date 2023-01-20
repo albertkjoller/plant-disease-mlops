@@ -28,6 +28,9 @@ from deployment.app.main import router
 
 
 def create_app():
+    """
+    Create the FastAPI by including router endpoints and mounting static files
+    """
     app = FastAPI()
     app.include_router(router)
     app.mount(
@@ -42,7 +45,9 @@ def create_app():
     # @scheduler.scheduled_job('interval', seconds=60)
     @scheduler.scheduled_job("cron", hour=4, minute=0)
     def cron_task_test():
-        print("cleanup job")
+        """
+        Every 4 hours the uploaded image and model files will be removed.
+        """
         if os.path.exists("deployment/app/static/assets/images"):
             for content in os.listdir("deployment/app/static/assets/images"):
                 if content not in [".DS_Store"]:

@@ -18,6 +18,8 @@ from typing import Optional, List
 
 import cv2
 import torch
+from torchvision import transforms
+from PIL import Image
 
 from deployment.app.app_utils import (
     ModelWrapper,
@@ -40,6 +42,7 @@ templates = Jinja2Templates(directory="./deployment/app/templates")
 hash_ = secrets.token_hex(8)
 modelClass = ModelWrapper()
 
+# initialize the log file for the prediction data
 if not os.path.exists("deployment/app/monitoring/current_data.csv"):
     with open("deployment/app/monitoring/current_data.csv", "w") as file:
         header = ["timestamp", "mean", "std", "min", "max", "Q1", "Q3", "model_path"]
@@ -108,11 +111,17 @@ async def predict(
         f.close()
 
     # Load image
-    image = cv2.imread(f"""{path_}/{file.filename}""")
-    image = cv2.resize(image, (h, w))
-    image = torch.FloatTensor(image).view(1, -1, h, w).to(modelClass.device)
-    if image.max() > 1.0:
-        image /= 256
+    transform = transforms.Compose(
+        [
+            transforms.Resize(h),
+            transforms.ToTensor(),
+            transforms.Normalize(mean=[0.0, 0.0, 0.0], std=[1.0, 1.0, 1.0]),
+        ]
+    )
+
+    image = Image.open(f"""{path_}/{file.filename}""")
+    image = transform(image)
+    image = image.unsqueeze(0)
 
     # Setup input
     input = {"data": image, "label": file.filename.split(os.sep)[-1]}
@@ -156,11 +165,16 @@ async def predict_multiple(
             f.write(content)
             f.close()
 
-        image = cv2.imread(f"""{path_}/{data.filename}""")
-        image = cv2.resize(image, (h, w))
-        image = torch.FloatTensor(image).view(-1, h, w).to(modelClass.device)
-        if image.max() > 1.0:
-            image /= 256
+        transform = transforms.Compose(
+            [
+                transforms.Resize(h),
+                transforms.ToTensor(),
+                transforms.Normalize(mean=[0.0, 0.0, 0.0], std=[1.0, 1.0, 1.0]),
+            ]
+        )
+
+        image = Image.open(f"""{path_}/{data.filename}""")
+        image = transform(image)
 
         timestamp = str(datetime.datetime.now())
         features = prepare_feature(image)
@@ -268,11 +282,16 @@ async def inference(
             f.write(content)
             f.close()
 
-        image = cv2.imread(f"""{path_}/{data.filename}""")
-        image = cv2.resize(image, (h, w))
-        image = torch.FloatTensor(image).view(-1, h, w).to(modelClass.device)
-        if image.max() > 1.0:
-            image /= 256
+        transform = transforms.Compose(
+            [
+                transforms.Resize(h),
+                transforms.ToTensor(),
+                transforms.Normalize(mean=[0.0, 0.0, 0.0], std=[1.0, 1.0, 1.0]),
+            ]
+        )
+
+        image = Image.open(f"""{path_}/{data.filename}""")
+        image = transform(image)
 
         images.append(image)
         labels.append(

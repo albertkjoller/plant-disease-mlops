@@ -22,6 +22,14 @@ log = logging.getLogger(__name__)
 
 @hydra.main(config_path="../configs", config_name="defaults.yaml", version_base="1.1")
 def train(config):
+    """
+    Function for training the model
+    Attributes
+    ----------
+        config:
+            config file containing configurations for the hyperparameters for training
+    """
+
     print(f"\nRunning on CUDA? {torch.cuda.is_available()}")
     print(f"\nConfiguration: \n {OmegaConf.to_yaml(config)}")
 
@@ -66,26 +74,30 @@ def train(config):
 
     # Initialize model
     model = ImageClassification(
-        lr=experiment.training.lr, n_classes=trainData.n_classes
+        lr=experiment.training.lr,
+        batch_size=experiment.training.batch_size,
+        n_classes=trainData.n_classes,
     )
     model.to(device)
 
     # Define log-name
-    log_name = f"{experiment.experiment_name}.lr={experiment.training.lr}.batch_size={experiment.training.batch_size}.seed={experiment.training.seed}"
+    log_name = f"{experiment.experiment_name}.time={int(round(time.time()))}.lr={experiment.training.lr}.batch_size={experiment.training.batch_size}.seed={experiment.training.seed}"
 
     # Define model checkpoint
     save_path = Path(to_absolute_path(paths.save_path)) / experiment.experiment_name
     if not (os.path.exists(save_path) and os.path.isdir(save_path)):
         os.makedirs(save_path)
 
+    # Save the checkpoint for the epoch leading to the best validation accuracy
     checkpoint_callback = ModelCheckpoint(
         save_top_k=3,
         monitor="val_acc",
-        mode="min",
+        mode="max",
         dirpath=save_path,
-        filename="-{epoch:02d}-{val_acc:.2f}",
+        filename="{epoch:02d}-{val_acc:.2f}-" + f"{log_name}",
     )
-    # Train model
+
+    # Define trainer
     trainer = Trainer(
         max_epochs=experiment.training.epochs,
         accelerator=accelerator_type,
@@ -98,6 +110,7 @@ def train(config):
         callbacks=[checkpoint_callback],
     )
 
+    # Train model
     trainer.fit(model, train_loader, val_loader)
 
 

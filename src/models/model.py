@@ -3,8 +3,6 @@ import torch
 from pytorch_lightning import LightningModule
 import torch.nn.functional as F
 
-from src.models.model_utils import get_labels  # get labels dictionary here
-
 
 class ImageClassification(LightningModule):
     """
@@ -16,13 +14,16 @@ class ImageClassification(LightningModule):
     ----------
         lr: float
             Learning rate
+        batch_size: int
+            batch size used
         n_classes: int
             Number of classes to be outputted
     """
 
-    def __init__(self, lr: float = 1e-3, n_classes: int = 38):
+    def __init__(self, lr: float = 1e-3, batch_size: int = 64, n_classes: int = 38):
         # Initialize as Lightning Module
         super().__init__()
+        self.save_hyperparameters()
 
         # Load pre-train ResNet network
         self.model = timm.create_model(
@@ -41,6 +42,8 @@ class ImageClassification(LightningModule):
 
         # Setup learning rate
         self.lr = lr
+        self.batch_size = batch_size
+        self.n_classes = n_classes
 
     def configure_optimizers(self):
         return torch.optim.Adam(self.model.parameters(), self.lr)
@@ -101,6 +104,8 @@ class ImageClassification(LightningModule):
             return pred_class
 
         else:  # consistently set to -1 in deployment mode
+            from src.models.model_utils import get_labels  # get labels dictionary here
+
             # Get label dictionary
             self.idx2class = get_labels()
             self.class2idx = {v: int(k) for (k, v) in self.idx2class.items()}

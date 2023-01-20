@@ -414,7 +414,7 @@ As is seen on [this figure](figures/wandb_sweep.png), we created an experiment i
 >
 > Answer:
 
---- question 16 fill here ---
+We faced a variety of bugs in the process of carying out the project. First of all we had code-related bugs - these were directly handled using the debugging tool of Visual Studio Code. For some scripts - such as for running the `make_dataset.py` as well as for training the model in `train_model.py` with a specific experiment configuration - debugging with input arguments was required. In Visual Studio Code this was handled by adding these to the "args" key in  the run-configuration before running in debug mode. For ML-related bugs (such as shape errors and weird model performance (such as always predicting the same class)) the VSCode debugging tool was similarly used by running with breakpoints and interacting in the debug console. Though we do not think that the code is "already perfect", we did not run with a profiler as we kept the model training loop as well as the inference step rather simple by exploiting a pretrained ResNet model with frozen weights.
 
 ## Working in the cloud
 
@@ -454,7 +454,7 @@ Finally, we use the cloud run service to serve and run our fastapi application.
 >
 > Answer:
 
-The main GCP compute engine with the following hardware configurations was used. 
+The main GCP compute engine with the following hardware configurations was used.
 * GPU:  NVIDIA V100
 * CPU: n1-standard-4 (15 GB memory)
 * Storage: 50 GB

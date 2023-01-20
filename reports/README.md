@@ -320,7 +320,7 @@ While we didn't go into great dephts regarding unit-testing, we still wanted to 
 - The model-tests made sure that the output of our model, based on a dummy-input, was of correct shape, namely 38 classes.
 - Finally, the API-tests made sure our webpage gave correct responses based on various requests to our website.
 
-Our Github actions workflow included a coverage test, as well as tests on 3 OSes (Windows, Ubuntu, MacOS) as seen in the following [https://github.com/albertkjoller/plant-disease-mlops/tree/main/.github/workflows](Workflow-link). Each OS-test ran on both Python 3.9 and 3.10.
+Our Github actions workflow included a coverage test, as well as tests on 3 OSes (Windows, Ubuntu, MacOS) as seen in the following [https://github.com/albertkjoller/plant-disease-mlops/tree/main/.github/workflows](https://github.com/albertkjoller/plant-disease-mlops/tree/main/.github/workflows). Each OS-test ran on both Python 3.9 and 3.10.
 
 Meanwhile, we created pre-commits that would check (and fix) various parts of our pushed code (as already answered in question 6)
 

@@ -344,10 +344,13 @@ Finally, the Trigger-tab on Google Cloud allowed continuous integration in the f
 
 We made use of Hydra when configuring our experiments, that way we could easily create configuration files as well as easily overwrite them when running in the terminal.
 
-Running an experiment would be done through the following command from the root of the prroject directory:
+Running an experiment would be done through the following command from the root of the project directory:
 
-```python src/model/train_model.py```
+```python src/models/train_model.py experiment.training.lr=0.01 experiment.training.batch_size=32```
 
+Meanwhile, a WandB sweep.yaml file was created, that could easliy overwrite the Hydra config through the following command:
+
+```wandb sweep --project sweeps_demo src/configs/sweep.yaml```
 
 ### Question 13
 

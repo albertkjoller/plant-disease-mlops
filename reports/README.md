@@ -515,6 +515,8 @@ However, when we were testing the setup for the image containers a smaller GCP c
 >
 > Answer:
 
+[this figure](figures/build.png).
+
 ### Question 22
 
 > **Did you manage to deploy your model, either in locally or cloud? If not, describe why. If yes, describe how and**
@@ -568,7 +570,7 @@ We managed to implement some monitoring of our deployed model. For instance, we 
 
 Group member s201715 used $50, Group member s184984 used $215, while s194253 used $0.2 (We don't quite understand why he's used such a little amount cause he's been a just as integral part of development as the rest of us).
 
-The service that cost the most was definitely the engine, most probably in part
+The service that cost the most was definitely the engine, most probably due to our large hyperparameter sweep.
 
 ## Overall discussion of project
 
@@ -603,7 +605,13 @@ The service that cost the most was definitely the engine, most probably in part
 >
 > Answer:
 
---- question 26 fill here ---
+The most trouble-some parts of our project were most definitely related to the automatic build of Docker images through the Google Cloud Trigger-service, where it turned out to be quite the struggle to obtain version controlled data as part of our Docker build. We started by wanting to pull the data through the simple `dvc pull`-command, however, as we didn't want to clone the entire repository into our Docker Image (for disc-storage reasons), we ended up trying to setup DVC without git, however, this also proved difficult.
+
+As already mentioned, we ended up fixing it by the gsutil-command `gsutil cp -r gs://plant-disease-mlops-data-bucket .`, this, however, lead to a LONG debugging session of trying to install the Google Cloud SDK on the docker image, as well as making the data-bucket (and just the data-bucket) available through a key-file.
+
+As for the docker-image meant for the API, it also proved difficult to download open-CV2 which also required a lot of our time.
+
+Otherwise, the process has been quite struggle-free, mostly in part to the great explanations and commands provided by Nicki on the course-webpage, for which we're incredibly thankful for:) The web-page will most certainly be visited by us multiple times in the future, as it really was a great resource for all things MLOps.
 
 ### Question 27
 

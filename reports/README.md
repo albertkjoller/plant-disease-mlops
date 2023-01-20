@@ -454,6 +454,19 @@ Finally, we use the cloud run service to serve and run our fastapi application.
 >
 > Answer:
 
+The main GCP compute engine with the following hardware configurations was used. 
+* GPU:  NVIDIA V100
+* CPU: n1-standard-4 (15 GB memory)
+* Storage: 50 GB
+
+The engine was started using the following command
+```
+gcloud compute ssh --zone "europe-west4-a" "plant-disease-mlops-gpu-big-engine"  --project "plant-disease-mlops"
+```
+
+The engine was especially useful when doing our experiments, where it was used for fast and efficient computations. The extra disks of 50 GB memory was added since we ran into memory problems when creating the docker images, and adding the extra memory helped solving this issue.
+
+However, when we were testing the setup for the image containers a smaller GCP compute instance was used.
 
 ### Question 19
 

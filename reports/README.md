@@ -409,7 +409,17 @@ ANSWER ME!!
 >
 > Answer:
 
---- question 15 fill here ---
+Upon each push to our main-branch an automatic Docker image was created that was meant to include everything for training models (and nothing more).
+The Docker could then be pulled through the following command:
+```docker pull gcr.io/plant-disease-mlops/docker_img```
+
+Opened interactively like so:
+```docker run --gpus all -it --rm gcr.io/plant-disease-mlops/docker_img```
+
+Finally, a run could be run with the previously stated command for our best model:
+```python src/models/train_model.py experiment.training.lr=0.0035900486014863666 experiment.training.batch_size=100 experiment.training.seed=42```
+
+As the Image contains all of our processed data, as well as all requirements needed for running an experiment it ended up with quite a hefty size of 9.9GBs, however, we opted for including the data in the Docker Image, as to make it more easily reproducible - rather than making users download the data themselves (though that could easily be done through the command: `gsutil cp -r gs://plant-disease-mlops-data-bucket .`)
 
 ### Question 16
 
@@ -443,11 +453,14 @@ ANSWER ME!!
 
 We used the following GCP services:
 1. Engine
+2. Triggerr
 2. Bucket
 3. Cloud Run
 The engine is used for running code on google servers. We used the engine for running model experiments. This was especially useful when doing different sweeps via Weights & Biases using bayesian optimization in order to find the best hyperparameters. This process would not have been posible timewise using a CPU. However, using the google engine with a GPU configuration it speeded up the process a lot.
 
-We uses the bucket for storing data. We both store the plant disease dataset in the bucket and files used for the fastapi application. This ensures easy access to the data.
+The Trigger-service was used in the creation of automatic docker images, used for training both on the cloud and on personal computers.
+
+We used the bucket for storing data. We both store the plant disease dataset in the bucket and files used for the fastapi application. This ensures easy access to the data.
 
 Finally, we use the cloud run service to serve and run our fastapi application.
 
@@ -481,7 +494,7 @@ Finally, we use the cloud run service to serve and run our fastapi application.
 >
 > Answer:
 
---- question 20 fill here ---
+
 
 ### Question 21
 
@@ -490,7 +503,7 @@ Finally, we use the cloud run service to serve and run our fastapi application.
 >
 > Answer:
 
---- question 21 fill here ---
+[this figure](figures/registry.png).
 
 ### Question 22
 
@@ -543,7 +556,9 @@ We managed to implement some monitoring of our deployed model. For instance, we 
 >
 > Answer:
 
---- question 24 fill here ---
+Group member s201715 used $50, Group member s184984 used $215, while s194253 used $0.2 (We don't quite understand why he's used such a little amount cause he's been a just as integral part of development as the rest of us).
+
+The service that cost the most was definitely the engine, most probably in part
 
 ## Overall discussion of project
 

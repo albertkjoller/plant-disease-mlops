@@ -226,7 +226,7 @@ modified the code structure a bit to fit our needs. First of all, we removed the
 >
 > Answer:
 
---- question 6 fill here ---
+We created a pre-commit configuration file for ensuring a standardized code quality and format on the repository. This was primarily included to avoid pushing large files (for not "exploding" repository size), ensuring whitespace as well as correctly formatting yaml-files. Furthermore, `black` was run on all committed scripts to ensure that the PEP8-format was followed - however, using a slightly modified `flake8`-configuration by setting the max-line-width to 100. We considered using `isort`, however, ended up not using it. These concepts matter in terms of readability of code, such that other teammates as well as other researchers who might find this work beneficial are able to read and understand the code without having to worry about the code and repository structure.
 
 ## Version control
 

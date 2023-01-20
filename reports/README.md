@@ -620,4 +620,8 @@ The service that cost the most was definitely the engine, most probably in part
 >
 > Answer:
 
---- question 27 fill here ---
+All members contributed equally to the project - both in terms of planning, coding and the overall group ambience :-) - As should be evident from the contribution history of the [GitHub repository](https://github.com/albertkjoller/plant-disease-mlops/pulse).
+
+Student s201715 was the main responsible for constructing the model setup with PyTorch Lightning.
+Student s184984 was the main responsible for building the Trigger on GCP.
+Student s194253 was the main responsible for setting up the FastAPI application.

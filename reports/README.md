@@ -506,7 +506,7 @@ However, when we were testing the setup for the image containers a smaller GCP c
 >
 > Answer:
 
-
+[this figure](figures/registry.png).
 
 ### Question 21
 
@@ -514,8 +514,6 @@ However, when we were testing the setup for the image containers a smaller GCP c
 > **your project. You can take inspiration from [this figure](figures/build.png).**
 >
 > Answer:
-
-[this figure](figures/registry.png).
 
 ### Question 22
 

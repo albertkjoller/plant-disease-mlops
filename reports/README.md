@@ -260,6 +260,7 @@ In total we have implemented 9 tests. 3 tests concern the data, where it is test
 >
 > Answer:
 
+The total code coverage percentage is 48% which is based on all code in the repository (source code, deployment code and tests code) - we refer to [this figure](figures/coverage.png) for seeing the specifics about files and lines not covered within the `pytest`s. We are far from 100% coverage for several reasons - first of all we put more weights on other parts of the project such as the hyperparameter sweeping with `wandb`. Secondly, the data-dependent pytests are skipped as the data was not included into the GitHub actions. As can be seen on the refered figure, it is especially the model.py file and the main.py (deployment/app-folder) that suffers from low coverage - this is due to not being able to train nor test the visual part of the FastAPI app.
 
 ### Question 9
 
@@ -392,9 +393,7 @@ Which is why reproducing this specific run could be done with the following comm
 >
 > Answer:
 
---- question 14 fill here ---
-
-ANSWER ME!!
+As is seen on [this figure](figures/wandb_sweep.png), we created an experiment in "Weights & Bias" by varying the learning rate associated with model training as well as the batch size used within the data loader. This was done by creating a hyperparameter sweep using a Bayesian Optimization strategy - thereby exploiting hyperparameters that were determined to make the most impact based on values and performance results previously obtained in the sweep-run. As can be seen on the figure, we have chosen to track the validation loss, validation accuracy as well as the training loss and training accuracy where the validation loss was used for optimization and hyperparameter selection. The validation loss was a NLLLoss based on log-softmax outputs for numerical stabilities and determines the data fit whereas the accuracy was used for obtaining a more intuitive representation of how the trained model performs. It is important to track the training loss and accuracy as well for being able to determine whether the model is prone to overfitting - overfitting was not observed. As can be seen on the figures, sweeping the hyperparameters had a significant effect on the model performance on the validation data set with a convergent accuracy ranging between 80% and 92%. Furthermore, we see that the plateau of convergence is dependent on the hyperparameter value - most likely the learning rate.
 
 ### Question 15
 
@@ -434,7 +433,7 @@ As the Image contains all of our processed data, as well as all requirements nee
 >
 > Answer:
 
---- question 16 fill here ---
+We faced a variety of bugs in the process of carying out the project. First of all we had code-related bugs - these were directly handled using the debugging tool of Visual Studio Code. For some scripts - such as for running the `make_dataset.py` as well as for training the model in `train_model.py` with a specific experiment configuration - debugging with input arguments was required. In Visual Studio Code this was handled by adding these to the "args" key in  the run-configuration before running in debug mode. For ML-related bugs (such as shape errors and weird model performance (such as always predicting the same class)) the VSCode debugging tool was similarly used by running with breakpoints and interacting in the debug console. Though we do not think that the code is "already perfect", we did not run with a profiler as we kept the model training loop as well as the inference step rather simple by exploiting a pretrained ResNet model with frozen weights.
 
 ## Working in the cloud
 
@@ -477,6 +476,19 @@ Finally, we use the cloud run service to serve and run our fastapi application.
 >
 > Answer:
 
+The main GCP compute engine with the following hardware configurations was used.
+* GPU:  NVIDIA V100
+* CPU: n1-standard-4 (15 GB memory)
+* Storage: 50 GB
+
+The engine was started using the following command
+```
+gcloud compute ssh --zone "europe-west4-a" "plant-disease-mlops-gpu-big-engine"  --project "plant-disease-mlops"
+```
+
+The engine was especially useful when doing our experiments, where it was used for fast and efficient computations. The extra disks of 50 GB memory was added since we ran into memory problems when creating the docker images, and adding the extra memory helped solving this issue.
+
+However, when we were testing the setup for the image containers a smaller GCP compute instance was used.
 
 ### Question 19
 
@@ -485,7 +497,7 @@ Finally, we use the cloud run service to serve and run our fastapi application.
 >
 > Answer:
 
---- question 19 fill here ---
+[bucket](figures/our_bucket.png)
 
 ### Question 20
 

@@ -77,7 +77,7 @@ async def upload_model(file: Optional[UploadFile] = None):
 @router.post("/load_model")
 def load_model(model_name: Optional[str] = None):
     # Load from temporary storage
-    model_name = "default.pth" if model_name == None else f"{hash_}/{model_name}"
+    model_name = "default.ckpt" if model_name == None else f"{hash_}/{model_name}"
     modelClass.load_model(
         f"deployment/app/static/assets/models/{model_name}"
     )  # hash+model_name

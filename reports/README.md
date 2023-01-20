@@ -260,7 +260,7 @@ In total we have implemented 9 tests. 3 tests concern the data, where it is test
 >
 > Answer:
 
-See [this figure](figures/coverage.png).
+The total code coverage percentage is 48% which is based on all code in the repository (source code, deployment code and tests code) - we refer to [this figure](figures/coverage.png) for seeing the specifics about files and lines not covered within the `pytest`s. We are far from 100% coverage for several reasons - first of all we put more weights on other parts of the project such as the hyperparameter sweeping with `wandb`. Secondly, the data-dependent pytests are skipped as the data was not included into the GitHub actions. As can be seen on the refered figure, it is especially the model.py file and the main.py (deployment/app-folder) that suffers from low coverage - this is due to not being able to train nor test the visual part of the FastAPI app.
 
 ### Question 9
 

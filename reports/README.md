@@ -384,9 +384,7 @@ ANSWER ME!
 >
 > Answer:
 
---- question 14 fill here ---
-
-ANSWER ME!!
+As is seen on [this figure](figures/wandb_sweep.png), we created an experiment in "Weights & Bias" by varying the learning rate associated with model training as well as the batch size used within the data loader. This was done by creating a hyperparameter sweep using a Bayesian Optimization strategy - thereby exploiting hyperparameters that were determined to make the most impact based on values and performance results previously obtained in the sweep-run. As can be seen on the figure, we have chosen to track the validation loss, validation accuracy as well as the training loss and training accuracy where the validation loss was used for optimization and hyperparameter selection. The validation loss was a NLLLoss based on log-softmax outputs for numerical stabilities and determines the data fit whereas the accuracy was used for obtaining a more intuitive representation of how the trained model performs. It is important to track the training loss and accuracy as well for being able to determine whether the model is prone to overfitting - overfitting was not observed. As can be seen on the figures, sweeping the hyperparameters had a significant effect on the model performance on the validation data set with a convergent accuracy ranging between 80% and 92%. Furthermore, we see that the plateau of convergence is dependent on the hyperparameter value - most likely the learning rate.
 
 ### Question 15
 

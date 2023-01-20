@@ -226,7 +226,7 @@ modified the code structure a bit to fit our needs. First of all, we removed the
 >
 > Answer:
 
---- question 6 fill here ---
+We created a pre-commit configuration file for ensuring a standardized code quality and format on the repository. This was primarily included to avoid pushing large files (for not "exploding" repository size), ensuring whitespace as well as correctly formatting yaml-files. Furthermore, `black` was run on all committed scripts to ensure that the PEP8-format was followed - however, using a slightly modified `flake8`-configuration by setting the max-line-width to 100. We considered using `isort`, however, ended up not using it. These concepts matter in terms of readability of code, such that other teammates as well as other researchers who might find this work beneficial are able to read and understand the code without having to worry about the code and repository structure.
 
 ## Version control
 
@@ -245,7 +245,7 @@ modified the code structure a bit to fit our needs. First of all, we removed the
 >
 > Answer:
 
-In total we have implemented 9 tests. 3 tests concern the data, where it is tested if correct dimensions and size of data are encountered. 5 tests are used for testing the behaviour of API endpoints, for instance if the model upload or prediction of images endpoint works as expected. Finally, 1 test for testing the model is implemented, where it is tested that the model output is as expected.  
+In total we have implemented 9 tests. 3 tests concern the data, where it is tested if correct dimensions and size of data are encountered. 5 tests are used for testing the behaviour of API endpoints, for instance if the model upload or prediction of images endpoint works as expected. Finally, 1 test for testing the model is implemented, where it is tested that the model output is as expected.
 
 ### Question 8
 
@@ -260,6 +260,7 @@ In total we have implemented 9 tests. 3 tests concern the data, where it is test
 >
 > Answer:
 
+See [this figure](figures/coverage.png).
 
 ### Question 9
 
@@ -274,7 +275,7 @@ In total we have implemented 9 tests. 3 tests concern the data, where it is test
 >
 > Answer:
 
-Both branches and pull requests (PRs) were used throughout the project. Each time a new code section/feature/improvement a new branch was created, where the work then was developed. When the development had been done, a pull request was made, where at least one other group member had to review the changes. Also an internal rule of all unit test needed to pass was made before a merge into main could take place. Most of the times only a single team member worked on a given branch. However, occasionally two group members were working on different tasks related to one branch, as such a sub-branch was made where one team member worked on the assigned task and another on the branch. When the task on the sub-branch had been developed a merge into the branch was made, and when all the tasks related to this branch had been devloped, and it was ensured that this branch was working, a merge into the main branch was made. As such merge into the main branch only occurred when the entire task was done and not just sub-tasks. Overall the usage of branches and pull requests was a great help to ensure version control and it helped us to manage and maintain code quality. 
+Both branches and pull requests (PRs) were used throughout the project. Each time a new code section/feature/improvement a new branch was created, where the work then was developed. When the development had been done, a pull request was made, where at least one other group member had to review the changes. Also an internal rule of all unit test needed to pass was made before a merge into main could take place. Most of the times only a single team member worked on a given branch. However, occasionally two group members were working on different tasks related to one branch, as such a sub-branch was made where one team member worked on the assigned task and another on the branch. When the task on the sub-branch had been developed a merge into the branch was made, and when all the tasks related to this branch had been devloped, and it was ensured that this branch was working, a merge into the main branch was made. As such merge into the main branch only occurred when the entire task was done and not just sub-tasks. Overall the usage of branches and pull requests was a great help to ensure version control and it helped us to manage and maintain code quality.
 
 ### Question 10
 
@@ -409,10 +410,10 @@ This though, did not mean we did not use DVC, as it was a great tool for continu
 > Answer:
 
 We used the following GCP services:
-1. Engine 
+1. Engine
 2. Bucket
 3. Cloud Run
-The engine is used for running code on google servers. We used the engine for running model experiments. This was especially useful when doing different sweeps via Weights & Biases using bayesian optimization in order to find the best hyperparameters. This process would not have been posible timewise using a CPU. However, using the google engine with a GPU configuration it speeded up the process a lot. 
+The engine is used for running code on google servers. We used the engine for running model experiments. This was especially useful when doing different sweeps via Weights & Biases using bayesian optimization in order to find the best hyperparameters. This process would not have been posible timewise using a CPU. However, using the google engine with a GPU configuration it speeded up the process a lot.
 
 We uses the bucket for storing data. We both store the plant disease dataset in the bucket and files used for the fastapi application. This ensures easy access to the data.
 

@@ -591,7 +591,10 @@ The service that cost the most was definitely the engine, most probably due to o
 >
 > Answer:
 
---- question 25 fill here ---
+Following the open-source spirit, we createde [this figure](figures/overview.png) that visualizes the overall architecture as an extention to the already uploaded pipeline (seen in Nicki's repository). The diagram starts on the user side with cloning the Git repository from GitHub. Along with this the user must pull the newest Docker image (built with a GCP Trigger) before beiing able to train a new model - the processed data is contained within the container. The user is furthermore able to query the deployed model through the application built on FastAPI with a GCP Cloud Run. On the developer side, one can pull versioned data from DVC that is stored in GCP Storage. When developing new code, a pre-commit configuration is specified before being able to actually commit the modified code parts. Trough Github workflows, continuous integration is run with CodeCov and Pytests, which must pass before allowing the developer to merge with the main branch. The developeer can furthermore train a new model on the cloud (GCP VM Engine) using Hydra for managing experimental configurations and W&B for handling logging and hyperparameter sweeping. Finally, a container containing the FastAPI application can be created and deployed using GCP Cloud Run from which Evidently AI is used for monitoring how the user interacts with the application.
+
+
+
 
 ### Question 26
 
